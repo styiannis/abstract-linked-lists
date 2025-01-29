@@ -4,7 +4,11 @@ function areIdenticalArrays(a: any[], b: any[]) {
 
 export function isValidObjectInstance(
   instance: unknown,
-  instanceType: 'singly-linked-list' | 'singly-linked-list-node'
+  instanceType:
+    | 'singly-linked-list'
+    | 'singly-linked-list-node'
+    | 'doubly-linked-list'
+    | 'doubly-linked-list-node'
 ) {
   if (
     'object' !== typeof instance ||
@@ -20,7 +24,14 @@ export function isValidObjectInstance(
     return areIdenticalArrays(props, ['next']);
   }
 
-  if ('singly-linked-list' === instanceType) {
+  if ('doubly-linked-list-node' === instanceType) {
+    return areIdenticalArrays(props, ['next', 'previous']);
+  }
+
+  if (
+    'singly-linked-list' === instanceType ||
+    'doubly-linked-list' === instanceType
+  ) {
     return areIdenticalArrays(props, ['head', 'size', 'tail']);
   }
 
