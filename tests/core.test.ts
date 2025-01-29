@@ -83,4 +83,73 @@ describe('Core', () => {
       });
     });
   });
+
+  describe('Iterators', () => {
+    describe('Iterate through a sequence of nodes, in both directions', () => {
+      it('Singly linked list', () => {
+        const fifth = singlyLinkedList.node.create();
+        const forth = singlyLinkedList.node.create(fifth);
+        const third = singlyLinkedList.node.create(forth);
+        const second = singlyLinkedList.node.create(third);
+        const first = singlyLinkedList.node.create(second);
+
+        const nodesArray = [first, second, third, forth, fifth];
+
+        const iter = singlyLinkedList.iterators.inOrder(first);
+
+        for (
+          let curr = iter.next(), i = 0;
+          !curr.done;
+          curr = iter.next(), i++
+        ) {
+          expect(curr.value).toBe(nodesArray[i]);
+        }
+
+        const revIter = singlyLinkedList.iterators.inReverseOrder(first);
+
+        for (
+          let curr = revIter.next(), i = nodesArray.length - 1;
+          !curr.done;
+          curr = revIter.next(), i--
+        ) {
+          expect(curr.value).toBe(nodesArray[i]);
+        }
+      });
+
+      it('Doubly linked list', () => {
+        const first = doublyLinkedList.node.create();
+        const second = doublyLinkedList.node.create(first);
+        const third = doublyLinkedList.node.create(second);
+        const forth = doublyLinkedList.node.create(third);
+        const fifth = doublyLinkedList.node.create(forth);
+
+        first.next = second;
+        second.next = third;
+        third.next = forth;
+        forth.next = fifth;
+
+        const nodesArray = [first, second, third, forth, fifth];
+
+        const iter = doublyLinkedList.iterators.inOrder(first);
+
+        for (
+          let curr = iter.next(), i = 0;
+          !curr.done;
+          curr = iter.next(), i++
+        ) {
+          expect(curr.value).toBe(nodesArray[i]);
+        }
+
+        const revIter = doublyLinkedList.iterators.inReverseOrder(fifth);
+
+        for (
+          let curr = revIter.next(), i = nodesArray.length - 1;
+          !curr.done;
+          curr = revIter.next(), i--
+        ) {
+          expect(curr.value).toBe(nodesArray[i]);
+        }
+      });
+    });
+  });
 });
