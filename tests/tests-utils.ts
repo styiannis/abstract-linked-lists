@@ -1,6 +1,10 @@
 import {
+  AbstractDoublyLinkedList,
+  AbstractDoublyLinkedListNode,
   AbstractSinglyLinkedList,
   AbstractSinglyLinkedListNode,
+  DoublyLinkedList,
+  DoublyLinkedListNode,
   SinglyLinkedList,
   SinglyLinkedListNode,
 } from '../src';
@@ -11,7 +15,11 @@ function areIdenticalArrays(a: any[], b: any[]) {
 
 export function isValidClassInstance(
   instance: unknown,
-  instanceType: 'SinglyLinkedList' | 'SinglyLinkedListNode'
+  instanceType:
+    | 'SinglyLinkedList'
+    | 'SinglyLinkedListNode'
+    | 'DoublyLinkedList'
+    | 'DoublyLinkedListNode'
 ) {
   if ('object' !== typeof instance) {
     return false;
@@ -25,7 +33,10 @@ export function isValidClassInstance(
     Object.getPrototypeOf(instance)
   ).sort();
 
-  if ('SinglyLinkedListNode' === instanceType) {
+  if (
+    'SinglyLinkedListNode' === instanceType ||
+    'DoublyLinkedListNode' === instanceType
+  ) {
     const expectedProtoProps = ['constructor', 'detach'];
 
     if ('SinglyLinkedListNode' === instanceType) {
@@ -36,6 +47,18 @@ export function isValidClassInstance(
         Object.getPrototypeOf(instance) !==
           AbstractSinglyLinkedListNode.prototype &&
         areIdenticalArrays(props, ['next']) &&
+        areIdenticalArrays(protoProps, expectedProtoProps)
+      );
+    }
+
+    if ('DoublyLinkedListNode' === instanceType) {
+      return (
+        instance instanceof DoublyLinkedListNode &&
+        instance instanceof AbstractDoublyLinkedListNode &&
+        Object.getPrototypeOf(instance) === DoublyLinkedListNode.prototype &&
+        Object.getPrototypeOf(instance) !==
+          AbstractDoublyLinkedListNode.prototype &&
+        areIdenticalArrays(props, ['next', 'previous']) &&
         areIdenticalArrays(protoProps, expectedProtoProps)
       );
     }
@@ -63,6 +86,18 @@ export function isValidClassInstance(
         Object.getPrototypeOf(instance) === SinglyLinkedList.prototype &&
         Object.getPrototypeOf(instance) !==
           AbstractSinglyLinkedList.prototype &&
+        areIdenticalArrays(props, expectedProps) &&
+        areIdenticalArrays(protoProps, expectedProtoProps)
+      );
+    }
+
+    if ('DoublyLinkedList' === instanceType) {
+      return (
+        instance instanceof DoublyLinkedList &&
+        instance instanceof AbstractDoublyLinkedList &&
+        Object.getPrototypeOf(instance) === DoublyLinkedList.prototype &&
+        Object.getPrototypeOf(instance) !==
+          AbstractDoublyLinkedList.prototype &&
         areIdenticalArrays(props, expectedProps) &&
         areIdenticalArrays(protoProps, expectedProtoProps)
       );
