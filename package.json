@@ -22,6 +22,11 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "scripts": {
     "build": "npx rimraf ./dist && rollup -c",
     "dev": "npx rimraf ./dist && rollup -c --watch",
