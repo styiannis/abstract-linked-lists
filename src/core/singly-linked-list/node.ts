@@ -1,0 +1,30 @@
+import { ISinglyLinkedListNode } from '../../types';
+
+/**
+ * Creates a new singly linked list node instance.
+ *
+ * @typeParam N - The type of the node.
+ * @param [next=null] - The next node, or `null` if the node has no next connection.
+ */
+export function create<N extends ISinglyLinkedListNode>(
+  next: N['next'] = null
+) {
+  return { next } as N;
+}
+
+/**
+ * Detaches the node by updating the `next` reference of the previous node.
+ *
+ * @typeParam N - The type of the node.
+ * @param instance - The node instance to be detached.
+ * @param previous - The previous node, or `null` if the node has no previous connection.
+ */
+export function detach<N extends ISinglyLinkedListNode>(
+  instance: N,
+  previous: N | null
+) {
+  if (previous) {
+    previous.next = instance.next;
+  }
+  instance.next = null;
+}
