@@ -68,6 +68,86 @@
         "types": "./dist/@types/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
+    },
+    "./singly-linked-list": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/index.d.ts",
+        "default": "./dist/es/core/singly-linked-list/index.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/index.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/index.js"
+      }
+    },
+    "./singly-linked-list/iterators": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/iterators.d.ts",
+        "default": "./dist/es/core/singly-linked-list/iterators.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/iterators.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/iterators.js"
+      }
+    },
+    "./singly-linked-list/list": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/list.d.ts",
+        "default": "./dist/es/core/singly-linked-list/list.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/list.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/list.js"
+      }
+    },
+    "./singly-linked-list/node": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/node.d.ts",
+        "default": "./dist/es/core/singly-linked-list/node.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/node.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/node.js"
+      }
+    },
+    "./doubly-linked-list": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/index.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/index.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/index.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/index.js"
+      }
+    },
+    "./doubly-linked-list/iterators": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/iterators.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/iterators.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/iterators.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/iterators.js"
+      }
+    },
+    "./doubly-linked-list/list": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/list.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/list.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/list.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/list.js"
+      }
+    },
+    "./doubly-linked-list/node": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/node.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/node.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/node.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/node.js"
+      }
     }
   }
 }
