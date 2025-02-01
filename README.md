@@ -202,7 +202,7 @@ import {
 import {
   inOrder,
   inReverseOrder,
-} from 'abstract-linked-lists/singly-linked-list/iterator';
+} from 'abstract-linked-lists/singly-linked-list/iterators';
 ```
 
 #### Doubly Linked List Functions:
@@ -229,7 +229,7 @@ import {
 import {
   inOrder,
   inReverseOrder,
-} from 'abstract-linked-lists/doubly-linked-list/iterator';
+} from 'abstract-linked-lists/doubly-linked-list/iterators';
 ```
 
 By importing only what you need, you optimize performance and maintain a clean codebase.
