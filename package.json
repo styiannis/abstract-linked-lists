@@ -1,6 +1,6 @@
 {
   "name": "abstract-linked-lists",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A TypeScript implementation of linked list data structures that supports both object-oriented and functional programming paradigms.",
   "keywords": [
     "abstract data structures",
