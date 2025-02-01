@@ -1,6 +1,15 @@
 {
   "name": "abstract-linked-lists",
-  "version": "0.5.0",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of linked list data structures that supports both object-oriented and functional programming paradigms.",
+  "keywords": [
+    "abstract data structures",
+    "abstract data types",
+    "data structures",
+    "doubly linked list",
+    "linked list",
+    "singly linked list"
+  ],
   "author": "Yiannis Stergiou <hello@styiannis.dev>",
   "license": "MIT",
   "repository": {
@@ -34,7 +43,7 @@
     "check-updates": "npx npm-check-updates",
     "ci": "npm run check-types && npm run lint && npm run build && npm run validate-exports",
     "clear": "npx rimraf ./build ./code_documentation ./coverage_report ./dist",
-    "docs": "npx rimraf ./code_documentation && npx typedoc@latest --basePath ./ --entryPoints src/index.ts --entryPointStrategy Expand --readme none --out code_documentation --name 'Abstract Linked Lists'",
+    "docs": "npx rimraf ./code_documentation && npx typedoc@latest --basePath ./ --entryPoints src/index.ts --entryPointStrategy Expand --readme none --includeVersion --out code_documentation --name 'Abstract Linked Lists'",
     "format": "npx prettier -w ./",
     "lint": "npx oxlint@latest src",
     "prepack": "npm i && npm run build",
@@ -67,6 +76,86 @@
       "require": {
         "types": "./dist/@types/index.d.ts",
         "default": "./dist/cjs/index.js"
+      }
+    },
+    "./singly-linked-list": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/index.d.ts",
+        "default": "./dist/es/core/singly-linked-list/index.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/index.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/index.js"
+      }
+    },
+    "./singly-linked-list/iterators": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/iterators.d.ts",
+        "default": "./dist/es/core/singly-linked-list/iterators.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/iterators.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/iterators.js"
+      }
+    },
+    "./singly-linked-list/list": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/list.d.ts",
+        "default": "./dist/es/core/singly-linked-list/list.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/list.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/list.js"
+      }
+    },
+    "./singly-linked-list/node": {
+      "import": {
+        "types": "./dist/@types/core/singly-linked-list/node.d.ts",
+        "default": "./dist/es/core/singly-linked-list/node.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/singly-linked-list/node.d.ts",
+        "default": "./dist/cjs/core/singly-linked-list/node.js"
+      }
+    },
+    "./doubly-linked-list": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/index.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/index.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/index.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/index.js"
+      }
+    },
+    "./doubly-linked-list/iterators": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/iterators.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/iterators.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/iterators.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/iterators.js"
+      }
+    },
+    "./doubly-linked-list/list": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/list.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/list.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/list.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/list.js"
+      }
+    },
+    "./doubly-linked-list/node": {
+      "import": {
+        "types": "./dist/@types/core/doubly-linked-list/node.d.ts",
+        "default": "./dist/es/core/doubly-linked-list/node.js"
+      },
+      "require": {
+        "types": "./dist/@types/core/doubly-linked-list/node.d.ts",
+        "default": "./dist/cjs/core/doubly-linked-list/node.js"
       }
     }
   }
