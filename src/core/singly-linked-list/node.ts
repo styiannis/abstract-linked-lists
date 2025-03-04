@@ -5,6 +5,7 @@ import { ISinglyLinkedListNode } from '../../types';
  *
  * @typeParam N - The type of the node.
  * @param [next=null] - The next node, or `null` if the node has no next connection.
+ * @returns A new singly linked list node instance.
  */
 export function create<N extends ISinglyLinkedListNode>(
   next: N['next'] = null

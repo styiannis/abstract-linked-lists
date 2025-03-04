@@ -4,6 +4,7 @@ import { IDoublyLinkedList } from '../../types';
  * Creates a new doubly linked list instance.
  *
  * @typeParam L - The type of the list.
+ * @returns A new doubly linked list instance.
  */
 export function create<L extends IDoublyLinkedList>() {
   return { size: 0, head: null, tail: null } as L;

@@ -4,6 +4,7 @@ import { ISinglyLinkedList } from '../../types';
  * Creates a new singly linked list instance.
  *
  * @typeParam L - The type of the list.
+ * @returns A new singly linked list instance.
  */
 export function create<L extends ISinglyLinkedList>() {
   return { size: 0, head: null, tail: null } as L;

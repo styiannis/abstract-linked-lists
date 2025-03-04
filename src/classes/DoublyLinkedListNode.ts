@@ -10,7 +10,7 @@ export class DoublyLinkedListNode
   implements IDoublyLinkedListNode
 {
   /**
-   * The constructor of the class that creates a new instance of it.
+   * Class instance constructor.
    *
    * @param [previous=null] - The previous node, or `null` if the node has no previous connection.
    * @param [next=null] - The next node, or `null` if the node has no next connection.

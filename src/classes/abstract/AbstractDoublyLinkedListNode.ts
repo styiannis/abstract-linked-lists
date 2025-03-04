@@ -3,7 +3,7 @@
  */
 export abstract class AbstractDoublyLinkedListNode {
   /**
-   * Detaches the node from its adjacent nodes.
+   * Detaches the node from its adjacent nodes and sets its pointers to `null`.
    */
   abstract detach(): void;
 }
