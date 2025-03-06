@@ -1,12 +1,12 @@
 # Abstract Linked Lists
 
-A TypeScript implementation of linked list data structures that supports both object-oriented and functional programming paradigms.
+A TypeScript library that provides implementations of singly and doubly linked lists, designed to support both object-oriented and functional programming paradigms.
 
 ## Key Features
 
 - 🔧 **Dual Programming Support**: Facilitates both object-oriented and functional programming approaches, allowing developers to choose the style that best fits their project requirements.
 
-- 🔒 **Type Safety**: Utilizes TypeScript generics and strict typing to ensure type correctness and reduce runtime errors.
+- 🔒 **Type Safety**: Utilizes Typescript generics and strict typing to ensure type correctness and reduce runtime errors.
 
 - ⚡ **Performance Optimization**: Implements efficient memory usage and optimized operations to enhance performance.
 
@@ -152,7 +152,7 @@ This approach is convenient when you need a broad range of functionalities from 
 
 If you're working with a particular type of linked list, you can import related modules directly.
 
-#### For Singly Linked Lists:
+#### For Singly Linked List:
 
 ```typescript
 import {
@@ -162,7 +162,7 @@ import {
 } from 'abstract-linked-lists/singly-linked-list';
 ```
 
-#### For Doubly Linked Lists:
+#### For Doubly Linked List:
 
 ```typescript
 import {

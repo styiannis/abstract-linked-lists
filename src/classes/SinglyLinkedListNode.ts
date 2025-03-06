@@ -10,7 +10,7 @@ export class SinglyLinkedListNode
   implements ISinglyLinkedListNode
 {
   /**
-   * The constructor of the class that creates a new instance of it.
+   * Class instance constructor.
    *
    * @param [next=null] - The next node, or `null` if the node has no next connection.
    */
