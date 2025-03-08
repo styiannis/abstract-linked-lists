@@ -45,11 +45,10 @@ export class DoublyLinkedList<
    * @returns A generator that yields nodes in the requested order.
    */
   *[Symbol.iterator](reversed: boolean = false) {
-    if (this.head) {
-      const iter = reversed ? inReverseOrder(this.tail) : inOrder(this.head);
-      for (let curr = iter.next(); !curr.done; curr = iter.next()) {
-        yield curr.value;
-      }
+    for (const node of reversed
+      ? inReverseOrder(this.tail)
+      : inOrder(this.head)) {
+      yield node;
     }
   }
 
