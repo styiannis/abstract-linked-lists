@@ -1,19 +1,22 @@
 /**
  * An abstract class representing a generic linked list.
+ * Provides the foundation for implementing linked list data structures
+ * with common operations like insertion, deletion, and traversal.
  *
  * @template N - The type of the nodes in the list.
  */
 export abstract class AbstractLinkedList<N> {
   /**
    * Returns an iterator for traversing the list.
+   * Supports both forward and reverse traversal.
    *
    * @param reversed - If `true`, the iterator will traverse the list in reverse order.
-   * @returns A generator that yields `N` type nodes.
+   * @returns A generator that yields `N` type nodes in the specified orders.
    */
   abstract [Symbol.iterator](reversed: boolean): Generator<N, void, void>;
 
   /**
-   * Clears the list by removing all nodes.
+   * Resets the list to its initial empty state.
    */
   abstract clear(): void;
 

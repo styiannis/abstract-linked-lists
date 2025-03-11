@@ -10,7 +10,7 @@ export class SinglyLinkedListNode
   implements ISinglyLinkedListNode
 {
   /**
-   * Class instance constructor.
+   * Creates a new `SinglyLinkedListNode` instance.
    *
    * @param [next=null] - The next node, or `null` if the node has no next connection.
    */
@@ -20,8 +20,8 @@ export class SinglyLinkedListNode
 
   /**
    * Detaches the node by updating the `next` reference of the previous node.
+   * After detachment, the node's `next` pointer is set to `null`.
    *
-   * @override
    * @param previous - The previous node, or `null` if the node has no previous connection.
    */
   detach(previous: SinglyLinkedListNode | null) {

@@ -10,7 +10,7 @@ export class DoublyLinkedListNode
   implements IDoublyLinkedListNode
 {
   /**
-   * Class instance constructor.
+   * Creates a new `DoublyLinkedListNode` instance.
    *
    * @param [previous=null] - The previous node, or `null` if the node has no previous connection.
    * @param [next=null] - The next node, or `null` if the node has no next connection.
@@ -31,9 +31,8 @@ export class DoublyLinkedListNode
   }
 
   /**
-   * Detaches the node from its adjacent nodes.
-   *
-   * @override
+   * Detaches the node from its adjacent nodes and sets its pointers to `null`.
+   * Updates the connections of adjacent nodes to maintain list integrity.
    */
   detach() {
     return detach(this);

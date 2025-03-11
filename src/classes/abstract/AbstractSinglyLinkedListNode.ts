@@ -1,5 +1,6 @@
 /**
  * An abstract class representing a singly linked list node.
+ * Defines the minimum interface that concrete singly linked list nodes must implement.
  */
 export abstract class AbstractSinglyLinkedListNode {
   /**

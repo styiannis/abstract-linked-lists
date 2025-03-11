@@ -28,19 +28,18 @@ export class SinglyLinkedList<
   size: number = 0;
 
   /**
-   * The first node in the list, or `null` if the list is empty.
+   * The first node in the list, or `null` if empty.
    */
   head: N | null = null;
 
   /**
-   * The last node in the list, or `null` if the list is empty.
+   * The last node in the list, or `null` if empty.
    */
   tail: N | null = null;
 
   /**
    * Returns an iterator for traversing the list.
    *
-   * @override
    * @param [reversed=false] - If `true`, the iterator will traverse the list in reverse order.
    * @returns A generator that yields nodes in the requested order.
    */
@@ -53,9 +52,7 @@ export class SinglyLinkedList<
   }
 
   /**
-   * Clears the list by removing all nodes.
-   *
-   * @override
+   * Resets the list to its initial empty state.
    */
   clear() {
     return clear(this);
@@ -64,7 +61,6 @@ export class SinglyLinkedList<
   /**
    * Retrieves the node at the specified index.
    *
-   * @override
    * @param index - The zero-based `index` of the node to retrieve.
    * @returns The node at the specified `index`, or `undefined` if the `index` is out of bounds.
    */
@@ -75,7 +71,6 @@ export class SinglyLinkedList<
   /**
    * Adds a node to the end of the list.
    *
-   * @override
    * @param node - The node to add.
    */
   pushNode(node: N) {
@@ -85,7 +80,6 @@ export class SinglyLinkedList<
   /**
    * Adds a node to the beginning of the list.
    *
-   * @override
    * @param node - The node to add.
    */
   unshiftNode(node: N) {
@@ -95,7 +89,6 @@ export class SinglyLinkedList<
   /**
    * Removes and returns the last node of the list.
    *
-   * @override
    * @returns The removed node, or `undefined` if the list was empty.
    */
   popNode() {
@@ -105,7 +98,6 @@ export class SinglyLinkedList<
   /**
    * Removes and returns the first node of the list.
    *
-   * @override
    * @returns The removed node, or `undefined` if the list was empty.
    */
   shiftNode() {

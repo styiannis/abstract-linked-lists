@@ -25,8 +25,8 @@ export function clear<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Retrieves the node at the specified index in a singly linked list.
  *
- * Time Complexity: `O(n)`, where `n` is the number of nodes in the list.
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(n)`, where `n` is the number of nodes.
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -53,8 +53,8 @@ export function nodeAt<L extends ISinglyLinkedList>(
 /**
  * Removes and returns the last node from a singly linked list.
  *
- * Time Complexity: `O(n)`, where `n` is the number of nodes in the list.
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(n)`, where `n` is the number of nodes.
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -89,8 +89,8 @@ export function popNode<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Adds a node to the end of a singly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -114,8 +114,8 @@ export function pushNode<L extends ISinglyLinkedList>(
 /**
  * Removes and returns the first node from a singly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -144,8 +144,8 @@ export function shiftNode<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Adds a node to the beginning of a singly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
