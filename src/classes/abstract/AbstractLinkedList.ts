@@ -1,9 +1,16 @@
 /**
- * An abstract class representing a generic linked list.
- * Provides the foundation for implementing linked list data structures
- * with common operations like insertion, deletion, and traversal.
+ * Core abstract base class for all linked list implementations.
+ *
+ * Defines the fundamental contract that all linked lists must fulfill,
+ * providing a unified interface for basic list operations.
  *
  * @template N - The type of the nodes in the list.
+ * @example
+ * ```typescript
+ * class MyLinkedList extends AbstractLinkedList {
+ *  // Implement abstract methods
+ * }
+ * ```
  */
 export abstract class AbstractLinkedList<N> {
   /**
@@ -11,7 +18,7 @@ export abstract class AbstractLinkedList<N> {
    * Supports both forward and reverse traversal.
    *
    * @param reversed - If `true`, the iterator will traverse the list in reverse order.
-   * @returns A generator that yields `N` type nodes in the specified orders.
+   * @returns An iterator that yields `N` type nodes in the specified orders.
    */
   abstract [Symbol.iterator](reversed: boolean): Generator<N, void, void>;
 

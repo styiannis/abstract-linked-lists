@@ -2,6 +2,7 @@ import { IDoublyLinkedListNode } from '../../types';
 
 /**
  * Creates a new doubly linked list node instance.
+ *
  * If provided, automatically connects the node with its previous and next nodes.
  *
  * @typeParam N - The type of the node.
@@ -28,6 +29,7 @@ export function create<N extends IDoublyLinkedListNode>(
 
 /**
  * Detaches the node from its adjacent nodes and sets its pointers to `null`.
+ *
  * Updates the connections of adjacent nodes to maintain list integrity.
  *
  * @typeParam N - The type of the node.

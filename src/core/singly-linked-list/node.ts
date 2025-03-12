@@ -2,6 +2,7 @@ import { ISinglyLinkedListNode } from '../../types';
 
 /**
  * Creates a new singly linked list node instance.
+ *
  * If provided, automatically connects the node with its next node.
  *
  * @typeParam N - The type of the node.
@@ -16,6 +17,7 @@ export function create<N extends ISinglyLinkedListNode>(
 
 /**
  * Detaches the node by updating the `next` reference of the previous node.
+ *
  * After detachment, the node's `next` pointer is set to `null`.
  *
  * @typeParam N - The type of the node.

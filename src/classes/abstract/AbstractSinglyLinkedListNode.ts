@@ -1,6 +1,15 @@
 /**
- * An abstract class representing a singly linked list node.
- * Defines the minimum interface that concrete singly linked list nodes must implement.
+ * Abstract base class for singly linked list nodes.
+ *
+ * Defines the contract for forward-only node implementations that maintain
+ * a single reference to the next node in the sequence.
+ *
+ * @example
+ * ```typescript
+ * class MySinglyLinkedListNode extends AbstractSinglyLinkedListNode {
+ *  // Implement abstract methods
+ * }
+ * ```
  */
 export abstract class AbstractSinglyLinkedListNode {
   /**

@@ -3,12 +3,12 @@ import { ISinglyLinkedListNode } from '../../types';
 /**
  * Generates an iterator that traverses a singly linked list in order.
  *
- * - Time Complexity (complete traversal): `O(n)`, where `n` is the number of nodes.
+ * - Time Complexity (complete traversal): `O(n)`
  * - Space Complexity: `O(1)` - only stores current node reference.
  *
  * @typeParam N - The type of the singly linked list node.
  * @param head - The `head` node of the list, or `null` if the list is empty.
- * @returns A generator that yields nodes in forward order.
+ * @returns  An iterator yielding nodes in forward order.
  */
 export function* inOrder<N extends ISinglyLinkedListNode>(head: N | null) {
   let node: N | null = head;
@@ -21,12 +21,12 @@ export function* inOrder<N extends ISinglyLinkedListNode>(head: N | null) {
 /**
  * Generates an iterator that traverses a singly linked list in reverse order.
  *
- * - Time Complexity (complete traversal): `O(n)`, where `n` is the number of nodes.
+ * - Time Complexity (complete traversal): `O(n)`
  * - Space Complexity: `O(n)` - requires stack storage for all nodes.
  *
  * @typeParam N - The type of the singly linked list node.
  * @param head - The `head` node of the list, or `null` if the list is empty.
- * @returns A generator that yields nodes in reverse order.
+ * @returns An iterator yielding nodes in reverse order.
  */
 export function* inReverseOrder<N extends ISinglyLinkedListNode>(
   head: N | null

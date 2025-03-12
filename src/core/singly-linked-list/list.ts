@@ -25,7 +25,7 @@ export function clear<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Retrieves the node at the specified index in a singly linked list.
  *
- * - Time Complexity: `O(n)`, where `n` is the number of nodes.
+ * - Time Complexity: `O(n)`
  * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
@@ -53,7 +53,7 @@ export function nodeAt<L extends ISinglyLinkedList>(
 /**
  * Removes and returns the last node from a singly linked list.
  *
- * - Time Complexity: `O(n)`, where `n` is the number of nodes.
+ * - Time Complexity: `O(n)`
  * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.

@@ -24,9 +24,10 @@ export function clear<L extends IDoublyLinkedList>(instance: L) {
 
 /**
  * Retrieves the node at the specified index in a doubly linked list.
+ *
  * Optimizes traversal by starting from `head` or `tail` based on `index` position.
  *
- * - Time Complexity: `O(min(index, size - index))` - traverses from nearest end.
+ * - Time Complexity: `O(min(index, n - index))` - traverses from nearest end.
  * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
