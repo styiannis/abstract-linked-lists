@@ -55,7 +55,7 @@
     "validate-exports": "node ./scripts/validate-exports.js"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "@tsconfig/node22": "^22.0.0",
     "@types/jest": "^29.5.14",
