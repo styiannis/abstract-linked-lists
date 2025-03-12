@@ -36,7 +36,6 @@ export interface IDoublyLinkedListNode {
 export interface ILinkedList<N> {
   /**
    * The current number of nodes in the list.
-   * Automatically updated when nodes are added or removed.
    */
   size: number;
   /**

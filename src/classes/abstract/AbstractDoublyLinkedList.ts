@@ -9,7 +9,6 @@ import { AbstractLinkedList } from './AbstractLinkedList';
  * Extends `AbstractLinkedList` with specialized behavior for doubly linked nodes.
  *
  * @template N - The type of nodes in the list, must extend `AbstractDoublyLinkedListNode`.
- *
  * @example
  * ```typescript
  * class MyDoublyLinkedList extends AbstractDoublyLinkedList {

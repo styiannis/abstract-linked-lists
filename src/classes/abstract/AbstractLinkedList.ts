@@ -18,7 +18,7 @@ export abstract class AbstractLinkedList<N> {
    * Supports both forward and reverse traversal.
    *
    * @param reversed - If `true`, the iterator will traverse the list in reverse order.
-   * @returns An iterator that yields `N` type nodes in the specified orders.
+   * @returns An iterator yielding nodes in the specified orders.
    */
   abstract [Symbol.iterator](reversed: boolean): Generator<N, void, void>;
 
