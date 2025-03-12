@@ -268,18 +268,18 @@ describe('Classes', () => {
         expect(list.nodeAt(1)).toBe(undefined);
         expect(list.nodeAt(-1)).toBe(undefined);
 
-        const nodesArray: SinglyLinkedListNode[] = [];
+        const nodeArray: SinglyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new SinglyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
         expect(list.nodeAt(NODES_SIZE)).toBe(undefined);
 
         for (let i = 0; i < NODES_SIZE; i++) {
-          expect(list.nodeAt(i)).toBe(nodesArray[i]);
+          expect(list.nodeAt(i)).toBe(nodeArray[i]);
           i++;
         }
 
@@ -301,18 +301,18 @@ describe('Classes', () => {
         expect(list.nodeAt(1)).toBe(undefined);
         expect(list.nodeAt(-1)).toBe(undefined);
 
-        const nodesArray: DoublyLinkedListNode[] = [];
+        const nodeArray: DoublyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new DoublyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
         expect(list.nodeAt(NODES_SIZE)).toBe(undefined);
 
         for (let i = 0; i < NODES_SIZE; i++) {
-          expect(list.nodeAt(i)).toBe(nodesArray[i]);
+          expect(list.nodeAt(i)).toBe(nodeArray[i]);
           i++;
         }
 
@@ -333,63 +333,43 @@ describe('Classes', () => {
     describe('Iterate through a sequence of nodes, in both directions', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();
-        const nodesArray: SinglyLinkedListNode[] = [];
+        const nodeArray: SinglyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new SinglyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
-        const iter = list[Symbol.iterator]();
-
-        for (
-          let curr = iter.next(), i = 0;
-          !curr.done;
-          curr = iter.next(), i++
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        let i = 0;
+        for (const node of list[Symbol.iterator]()) {
+          expect(node).toBe(nodeArray[i++]);
         }
 
-        const revIter = list[Symbol.iterator](true);
-
-        for (
-          let curr = revIter.next(), i = NODES_SIZE - 1;
-          !curr.done;
-          curr = revIter.next(), i--
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        i = NODES_SIZE - 1;
+        for (const node of list[Symbol.iterator](true)) {
+          expect(node).toBe(nodeArray[i--]);
         }
       });
 
       it('Doubly linked list', () => {
         const list = new DoublyLinkedList();
-        const nodesArray: DoublyLinkedListNode[] = [];
+        const nodeArray: DoublyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new DoublyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
-        const iter = list[Symbol.iterator]();
-
-        for (
-          let curr = iter.next(), i = 0;
-          !curr.done;
-          curr = iter.next(), i++
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        let i = 0;
+        for (const node of list[Symbol.iterator]()) {
+          expect(node).toBe(nodeArray[i++]);
         }
 
-        const revIter = list[Symbol.iterator](true);
-
-        for (
-          let curr = revIter.next(), i = NODES_SIZE - 1;
-          !curr.done;
-          curr = revIter.next(), i--
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        i = NODES_SIZE - 1;
+        for (const node of list[Symbol.iterator](true)) {
+          expect(node).toBe(nodeArray[i--]);
         }
       });
     });
@@ -397,17 +377,17 @@ describe('Classes', () => {
     describe('For loop', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();
-        const nodesArray: SinglyLinkedListNode[] = [];
+        const nodeArray: SinglyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new SinglyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
         let i = 0;
         for (const node of list) {
-          expect(node).toBe(nodesArray[i]);
+          expect(node).toBe(nodeArray[i]);
           i++;
         }
 
@@ -416,17 +396,17 @@ describe('Classes', () => {
 
       it('Doubly linked list', () => {
         const list = new DoublyLinkedList();
-        const nodesArray: DoublyLinkedListNode[] = [];
+        const nodeArray: DoublyLinkedListNode[] = [];
 
         for (let i = 0; i < NODES_SIZE; i++) {
           const n = new DoublyLinkedListNode();
-          nodesArray[i] = n;
+          nodeArray[i] = n;
           list.pushNode(n);
         }
 
         let i = 0;
         for (const node of list) {
-          expect(node).toBe(nodesArray[i]);
+          expect(node).toBe(nodeArray[i]);
           i++;
         }
 

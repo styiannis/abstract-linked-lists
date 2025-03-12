@@ -93,26 +93,16 @@ describe('Core', () => {
         const second = singlyLinkedList.node.create(third);
         const first = singlyLinkedList.node.create(second);
 
-        const nodesArray = [first, second, third, forth, fifth];
+        const nodeArray = [first, second, third, forth, fifth];
 
-        const iter = singlyLinkedList.iterators.inOrder(first);
-
-        for (
-          let curr = iter.next(), i = 0;
-          !curr.done;
-          curr = iter.next(), i++
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        let i = 0;
+        for (const node of singlyLinkedList.iterators.inOrder(first)) {
+          expect(node).toBe(nodeArray[i++]);
         }
 
-        const revIter = singlyLinkedList.iterators.inReverseOrder(first);
-
-        for (
-          let curr = revIter.next(), i = nodesArray.length - 1;
-          !curr.done;
-          curr = revIter.next(), i--
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        i = nodeArray.length - 1;
+        for (const node of singlyLinkedList.iterators.inReverseOrder(first)) {
+          expect(node).toBe(nodeArray[i--]);
         }
       });
 
@@ -128,26 +118,16 @@ describe('Core', () => {
         third.next = forth;
         forth.next = fifth;
 
-        const nodesArray = [first, second, third, forth, fifth];
+        const nodeArray = [first, second, third, forth, fifth];
 
-        const iter = doublyLinkedList.iterators.inOrder(first);
-
-        for (
-          let curr = iter.next(), i = 0;
-          !curr.done;
-          curr = iter.next(), i++
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        let i = 0;
+        for (const node of singlyLinkedList.iterators.inOrder(first)) {
+          expect(node).toBe(nodeArray[i++]);
         }
 
-        const revIter = doublyLinkedList.iterators.inReverseOrder(fifth);
-
-        for (
-          let curr = revIter.next(), i = nodesArray.length - 1;
-          !curr.done;
-          curr = revIter.next(), i--
-        ) {
-          expect(curr.value).toBe(nodesArray[i]);
+        i = nodeArray.length - 1;
+        for (const node of singlyLinkedList.iterators.inReverseOrder(first)) {
+          expect(node).toBe(nodeArray[i--]);
         }
       });
     });

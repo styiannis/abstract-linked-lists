@@ -25,8 +25,10 @@ export function clear<L extends IDoublyLinkedList>(instance: L) {
 /**
  * Retrieves the node at the specified index in a doubly linked list.
  *
- * Time Complexity: `O(n)`, where `n` is the number of nodes in the list divided by 2.
- * Space Complexity: `O(1)`
+ * Optimizes traversal by starting from `head` or `tail` based on `index` position.
+ *
+ * - Time Complexity: `O(min(index, n - index))` - traverses from nearest end.
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -63,8 +65,8 @@ export function nodeAt<L extends IDoublyLinkedList>(
 /**
  * Removes and returns the last node from a doubly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -95,8 +97,8 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
 /**
  * Adds a node to the end of a doubly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -121,8 +123,8 @@ export function pushNode<L extends IDoublyLinkedList>(
 /**
  * Removes and returns the first node from a doubly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
@@ -153,8 +155,8 @@ export function shiftNode<L extends IDoublyLinkedList>(instance: L) {
 /**
  * Adds a node to the beginning of a doubly linked list.
  *
- * Time Complexity: `O(1)`
- * Space Complexity: `O(1)`
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.

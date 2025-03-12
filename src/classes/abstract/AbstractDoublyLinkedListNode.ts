@@ -1,5 +1,15 @@
 /**
- * An abstract class representing a doubly linked list node.
+ * Abstract base class for doubly linked list nodes.
+ *
+ * Defines the contract for bidirectional node implementations that maintain
+ * references to both previous and next nodes in the sequence.
+ *
+ * @example
+ * ```typescript
+ * class MyDoublyLinkedListNode extends AbstractDoublyLinkedListNode {
+ *  // Implement abstract methods
+ * }
+ * ```
  */
 export abstract class AbstractDoublyLinkedListNode {
   /**
