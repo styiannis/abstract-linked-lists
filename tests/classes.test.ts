@@ -280,7 +280,6 @@ describe('Classes', () => {
 
         for (let i = 0; i < NODES_SIZE; i++) {
           expect(list.nodeAt(i)).toBe(nodeArray[i]);
-          i++;
         }
 
         expect(list.size).toBe(NODES_SIZE);
@@ -313,7 +312,6 @@ describe('Classes', () => {
 
         for (let i = 0; i < NODES_SIZE; i++) {
           expect(list.nodeAt(i)).toBe(nodeArray[i]);
-          i++;
         }
 
         expect(list.size).toBe(NODES_SIZE);

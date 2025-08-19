@@ -45,7 +45,7 @@ import { DoublyLinkedListNode } from './DoublyLinkedListNode';
  * ```
  */
 export class DoublyLinkedList<
-    N extends DoublyLinkedListNode = DoublyLinkedListNode,
+    N extends DoublyLinkedListNode = DoublyLinkedListNode
   >
   extends AbstractDoublyLinkedList<N>
   implements IDoublyLinkedList<N>
