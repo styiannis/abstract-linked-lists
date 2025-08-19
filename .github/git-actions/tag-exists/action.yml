@@ -1,5 +1,4 @@
 name: Tag exists
-description:
 
 inputs:
   tag:
@@ -11,7 +10,7 @@ outputs:
     value: ${{ steps.check-tag-exists.outputs.exists }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - id: check-tag-exists
       shell: bash
