@@ -65,25 +65,25 @@ export function popNode<L extends ISinglyLinkedList>(instance: L) {
     return;
   }
 
-  let beforeLastNode: L['head'] = null;
-  let lastNode: NonNullable<L['head']> = instance.head;
+  let last: NonNullable<L['head']> = instance.head;
+  let previous: L['head'] = null;
 
-  while (lastNode.next) {
-    beforeLastNode = lastNode;
-    lastNode = lastNode.next;
+  while (last.next) {
+    previous = last;
+    last = last.next;
   }
 
-  if (!beforeLastNode) {
+  if (!previous) {
     instance.head = null;
     instance.tail = null;
   } else {
-    beforeLastNode.next = null;
-    instance.tail = beforeLastNode;
+    previous.next = null;
+    instance.tail = previous;
   }
 
   instance.size--;
 
-  return lastNode;
+  return last;
 }
 
 /**

@@ -77,21 +77,21 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
     return;
   }
 
-  const lastNode: NonNullable<L['head']> = instance.tail;
-  const beforeLast: L['head'] = lastNode.previous;
+  const last: NonNullable<L['head']> = instance.tail;
+  const previous: L['head'] = last.previous;
 
-  if (!beforeLast) {
+  if (!previous) {
     instance.head = null;
     instance.tail = null;
   } else {
-    lastNode.previous = null;
-    beforeLast.next = null;
-    instance.tail = beforeLast;
+    last.previous = null;
+    previous.next = null;
+    instance.tail = previous;
   }
 
   instance.size--;
 
-  return lastNode;
+  return last;
 }
 
 /**

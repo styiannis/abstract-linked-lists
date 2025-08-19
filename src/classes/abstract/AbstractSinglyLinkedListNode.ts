@@ -17,5 +17,5 @@ export abstract class AbstractSinglyLinkedListNode {
    *
    * @param previous - The previous node, or `null` if the node has no previous connection.
    */
-  abstract detach(previous: typeof this | null): void;
+  abstract detach(previous: AbstractSinglyLinkedListNode | null): void;
 }
