@@ -1,5 +1,8 @@
 # Abstract Linked Lists
 
+[![NPM Version](https://img.shields.io/npm/v/abstract-linked-lists)](https://www.npmjs.com/package/abstract-linked-lists)
+[![Coverage Status](https://img.shields.io/coverallsCoverage/github/styiannis/abstract-linked-lists)](https://coveralls.io/github/styiannis/abstract-linked-lists?branch=main)
+
 A TypeScript library that provides implementations of singly and doubly linked lists, designed to support both object-oriented and functional programming paradigms.
 
 ## Key Features

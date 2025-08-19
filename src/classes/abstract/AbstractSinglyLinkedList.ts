@@ -17,5 +17,5 @@ import { AbstractSinglyLinkedListNode } from './AbstractSinglyLinkedListNode';
  * ```
  */
 export abstract class AbstractSinglyLinkedList<
-  N extends AbstractSinglyLinkedListNode = AbstractSinglyLinkedListNode,
+  N extends AbstractSinglyLinkedListNode = AbstractSinglyLinkedListNode
 > extends AbstractLinkedList<N> {}
