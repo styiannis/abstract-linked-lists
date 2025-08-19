@@ -46,7 +46,7 @@ import { SinglyLinkedListNode } from './SinglyLinkedListNode';
  * ```
  */
 export class SinglyLinkedList<
-    N extends SinglyLinkedListNode = SinglyLinkedListNode
+    N extends SinglyLinkedListNode = SinglyLinkedListNode,
   >
   extends AbstractSinglyLinkedList<N>
   implements ISinglyLinkedList<N>
