@@ -1,6 +1,6 @@
 {
   "name": "abstract-linked-lists",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A TypeScript library that provides implementations of singly and doubly linked lists, designed to support both object-oriented and functional programming paradigms.",
   "keywords": [
     "abstract data structures",
