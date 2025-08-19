@@ -103,9 +103,7 @@ pushNode(list, node_a);
 pushNode(list, node_b);
 
 // Iterate over list nodes
-const iterator = inOrder(list.head);
-for (let curr = iterator.next(); !curr.done; curr = iterator.next()) {
-  const node = curr.value;
+for (const node of inOrder(list.head)) {
   console.log(node);
 }
 ```
@@ -152,7 +150,7 @@ This approach is convenient when you need a broad range of functionalities from 
 
 If you're working with a particular type of linked list, you can import related modules directly.
 
-#### For Singly Linked List:
+#### For Singly Linked List
 
 ```typescript
 import {
@@ -162,7 +160,7 @@ import {
 } from 'abstract-linked-lists/singly-linked-list';
 ```
 
-#### For Doubly Linked List:
+#### For Doubly Linked List
 
 ```typescript
 import {
@@ -178,7 +176,7 @@ This method helps keep your bundle size small by only including necessary module
 
 For maximum control and minimal footprint, import individual functions or operations.
 
-#### Singly Linked List Functions:
+#### Singly Linked List Functions
 
 ```typescript
 // Node operations
@@ -205,7 +203,7 @@ import {
 } from 'abstract-linked-lists/singly-linked-list/iterators';
 ```
 
-#### Doubly Linked List Functions:
+#### Doubly Linked List Functions
 
 ```typescript
 // Node operations

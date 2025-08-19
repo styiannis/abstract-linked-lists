@@ -58,7 +58,7 @@ export interface ILinkedList<N> {
  *                Defaults to the base `ISinglyLinkedListNode` if not specified.
  */
 export interface ISinglyLinkedList<
-  N extends ISinglyLinkedListNode = ISinglyLinkedListNode,
+  N extends ISinglyLinkedListNode = ISinglyLinkedListNode
 > extends ILinkedList<N> {}
 
 /**
@@ -69,5 +69,5 @@ export interface ISinglyLinkedList<
  *                Defaults to the base `IDoublyLinkedListNode` if not specified.
  */
 export interface IDoublyLinkedList<
-  N extends IDoublyLinkedListNode = IDoublyLinkedListNode,
+  N extends IDoublyLinkedListNode = IDoublyLinkedListNode
 > extends ILinkedList<N> {}
