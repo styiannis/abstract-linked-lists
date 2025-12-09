@@ -1,4 +1,5 @@
 name: Create release
+description: Create a new release
 
 inputs:
   github_token:

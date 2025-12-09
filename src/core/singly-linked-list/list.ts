@@ -73,12 +73,12 @@ export function popNode<L extends ISinglyLinkedList>(instance: L) {
     last = last.next;
   }
 
-  if (!previous) {
-    instance.head = null;
-    instance.tail = null;
-  } else {
+  if (previous) {
     previous.next = null;
     instance.tail = previous;
+  } else {
+    instance.head = null;
+    instance.tail = null;
   }
 
   instance.size--;
@@ -100,11 +100,11 @@ export function pushNode<L extends ISinglyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
-  if (!instance.tail) {
-    instance.head = node;
+  if (instance.tail) {
+    instance.tail.next = node;
     instance.tail = node;
   } else {
-    instance.tail.next = node;
+    instance.head = node;
     instance.tail = node;
   }
 
@@ -128,12 +128,12 @@ export function shiftNode<L extends ISinglyLinkedList>(instance: L) {
 
   const first: NonNullable<L['head']> = instance.head;
 
-  if (!first.next) {
-    instance.head = null;
-    instance.tail = null;
-  } else {
+  if (first.next) {
     instance.head = first.next;
     first.next = null;
+  } else {
+    instance.head = null;
+    instance.tail = null;
   }
 
   instance.size--;
@@ -155,12 +155,12 @@ export function unshiftNode<L extends ISinglyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
-  if (!instance.head) {
-    instance.head = node;
-    instance.tail = node;
-  } else {
+  if (instance.head) {
     node.next = instance.head;
     instance.head = node;
+  } else {
+    instance.head = node;
+    instance.tail = node;
   }
 
   instance.size++;

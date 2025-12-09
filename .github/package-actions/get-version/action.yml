@@ -1,4 +1,5 @@
 name: Get package.json version
+description: Get package.json version
 
 outputs:
   version:

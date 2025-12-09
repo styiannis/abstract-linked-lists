@@ -1,4 +1,5 @@
 name: Configure git identity
+description: Configure git identity
 
 runs:
   using: composite

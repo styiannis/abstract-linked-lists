@@ -1,4 +1,5 @@
 name: Tag exists
+description: Checks if the provided tag exists
 
 inputs:
   tag:

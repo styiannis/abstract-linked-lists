@@ -80,13 +80,13 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
   const last: NonNullable<L['head']> = instance.tail;
   const previous: L['head'] = last.previous;
 
-  if (!previous) {
-    instance.head = null;
-    instance.tail = null;
-  } else {
+  if (previous) {
     last.previous = null;
     previous.next = null;
     instance.tail = previous;
+  } else {
+    instance.head = null;
+    instance.tail = null;
   }
 
   instance.size--;
@@ -108,12 +108,12 @@ export function pushNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
-  if (!instance.tail) {
-    instance.head = node;
-    instance.tail = node;
-  } else {
+  if (instance.tail) {
     node.previous = instance.tail;
     instance.tail.next = node;
+    instance.tail = node;
+  } else {
+    instance.head = node;
     instance.tail = node;
   }
 
@@ -138,13 +138,13 @@ export function shiftNode<L extends IDoublyLinkedList>(instance: L) {
   const first: NonNullable<L['head']> = instance.head;
   const second: L['head'] = first.next;
 
-  if (!second) {
-    instance.head = null;
-    instance.tail = null;
-  } else {
+  if (second) {
     first.next = null;
     second.previous = null;
     instance.head = second;
+  } else {
+    instance.head = null;
+    instance.tail = null;
   }
 
   instance.size--;
@@ -166,13 +166,13 @@ export function unshiftNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
-  if (!instance.head) {
-    instance.head = node;
-    instance.tail = node;
-  } else {
+  if (instance.head) {
     node.next = instance.head;
     instance.head.previous = node;
     instance.head = node;
+  } else {
+    instance.head = node;
+    instance.tail = node;
   }
 
   instance.size++;
