@@ -6,7 +6,7 @@ import {
   SinglyLinkedList,
   SinglyLinkedListNode,
 } from '../src';
-import { isValidClassInstance } from './util';
+import { isValidClassInstance } from './util/isValidClassInstance';
 
 describe('Classes', () => {
   const NODES_SIZE = 7;

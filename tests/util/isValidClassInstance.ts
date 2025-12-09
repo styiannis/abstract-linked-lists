@@ -8,7 +8,7 @@ import {
   SinglyLinkedList,
   SinglyLinkedListNode,
 } from '../../src';
-import { areIdenticalArrays } from './areIdenticalArrays';
+import { arraysEqual } from './arraysEqual';
 
 function isValidListClassInstance(
   instance: unknown,
@@ -35,8 +35,8 @@ function isValidListClassInstance(
       instance instanceof AbstractSinglyLinkedList &&
       proto === SinglyLinkedList.prototype &&
       proto !== AbstractSinglyLinkedList.prototype &&
-      areIdenticalArrays(props, expectedProps) &&
-      areIdenticalArrays(protoProps, expectedProtoProps)
+      arraysEqual(props, expectedProps) &&
+      arraysEqual(protoProps, expectedProtoProps)
     );
   }
 
@@ -45,8 +45,8 @@ function isValidListClassInstance(
     instance instanceof AbstractDoublyLinkedList &&
     proto === DoublyLinkedList.prototype &&
     proto !== AbstractDoublyLinkedList.prototype &&
-    areIdenticalArrays(props, expectedProps) &&
-    areIdenticalArrays(protoProps, expectedProtoProps)
+    arraysEqual(props, expectedProps) &&
+    arraysEqual(protoProps, expectedProtoProps)
   );
 }
 
@@ -66,8 +66,8 @@ function isValidNodeClassInstance(
       instance instanceof AbstractSinglyLinkedListNode &&
       proto === SinglyLinkedListNode.prototype &&
       proto !== AbstractSinglyLinkedListNode.prototype &&
-      areIdenticalArrays(props, ['next']) &&
-      areIdenticalArrays(protoProps, expectedProtoProps)
+      arraysEqual(props, ['next']) &&
+      arraysEqual(protoProps, expectedProtoProps)
     );
   }
 
@@ -76,8 +76,8 @@ function isValidNodeClassInstance(
     instance instanceof AbstractDoublyLinkedListNode &&
     proto === DoublyLinkedListNode.prototype &&
     proto !== AbstractDoublyLinkedListNode.prototype &&
-    areIdenticalArrays(props, ['next', 'previous']) &&
-    areIdenticalArrays(protoProps, expectedProtoProps)
+    arraysEqual(props, ['next', 'previous']) &&
+    arraysEqual(protoProps, expectedProtoProps)
   );
 }
 

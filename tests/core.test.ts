@@ -1,5 +1,5 @@
 import { doublyLinkedList, singlyLinkedList } from '../src';
-import { isValidObjectInstance } from './util';
+import { isValidObjectInstance } from './util/isValidObjectInstance';
 
 describe('Core', () => {
   describe('Node', () => {
@@ -22,6 +22,12 @@ describe('Core', () => {
         singlyLinkedList.node.detach(node, previous);
 
         expect(previous.next).toBe(next);
+        expect(node.next).toBe(null);
+        expect(next.next).toBe(null);
+
+        singlyLinkedList.node.detach(previous, null);
+
+        expect(previous.next).toBe(null);
         expect(node.next).toBe(null);
         expect(next.next).toBe(null);
       });
@@ -55,6 +61,30 @@ describe('Core', () => {
         expect(node.next).toBe(null);
 
         expect(next.previous).toBe(previous);
+        expect(next.next).toBe(null);
+
+        doublyLinkedList.node.detach(previous);
+
+        expect(previous.previous).toBe(null);
+        expect(previous.next).toBe(null);
+
+        expect(node.previous).toBe(null);
+        expect(node.next).toBe(null);
+
+        expect(next.previous).toBe(null);
+        expect(next.next).toBe(null);
+
+        node.next = next;
+        next.previous = node;
+        doublyLinkedList.node.detach(next);
+
+        expect(previous.previous).toBe(null);
+        expect(previous.next).toBe(null);
+
+        expect(node.previous).toBe(null);
+        expect(node.next).toBe(null);
+
+        expect(next.previous).toBe(null);
         expect(next.next).toBe(null);
       });
     });

@@ -1,4 +1,4 @@
-import { areIdenticalArrays } from './areIdenticalArrays';
+import { arraysEqual } from './arraysEqual';
 
 export function isValidObjectInstance(
   instance: unknown,
@@ -18,12 +18,12 @@ export function isValidObjectInstance(
   const props = Object.getOwnPropertyNames(instance).sort();
 
   if ('singly-linked-list-node' === instanceType) {
-    return areIdenticalArrays(props, ['next']);
+    return arraysEqual(props, ['next']);
   }
 
   if ('doubly-linked-list-node' === instanceType) {
-    return areIdenticalArrays(props, ['next', 'previous']);
+    return arraysEqual(props, ['next', 'previous']);
   }
 
-  return areIdenticalArrays(props, ['head', 'size', 'tail']);
+  return arraysEqual(props, ['head', 'size', 'tail']);
 }
