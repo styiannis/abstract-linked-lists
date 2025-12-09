@@ -1,5 +1,5 @@
 import { doublyLinkedList, singlyLinkedList } from '../src';
-import { isValidObjectInstance } from './tests-utils';
+import { isValidObjectInstance } from './util';
 
 describe('Core', () => {
   describe('Node', () => {
