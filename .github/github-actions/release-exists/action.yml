@@ -1,4 +1,5 @@
 name: Release exists
+description: Checks if the provided release exists
 
 inputs:
   github_token:
