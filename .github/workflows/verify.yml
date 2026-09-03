@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.head_ref || github.ref }}
+  group: verify-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Node.js 22 (build & test)
         uses: actions/setup-node@v4
@@ -47,8 +45,3 @@ jobs:
 
       - name: Check dist loads (Node 24)
         run: npm run check-dist-loads
-
-      - name: Upload code coverage
-        uses: coverallsapp/github-action@v2
-        with:
-          file: ./coverage_report/lcov.info
