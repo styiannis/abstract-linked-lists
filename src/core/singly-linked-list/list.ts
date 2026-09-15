@@ -1,4 +1,5 @@
 import { ISinglyLinkedList } from '../../types';
+import { detach } from './node';
 
 /**
  * Creates a new singly linked list instance.
@@ -81,7 +82,7 @@ export function popNode<L extends ISinglyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return last;
 }
@@ -108,7 +109,44 @@ export function pushNode<L extends ISinglyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
+}
+
+/**
+ * Removes a specific node from a singly linked list.
+ *
+ * The caller must already hold references to both the `node` and its
+ * `previous` node, since a singly linked list cannot look either up on its
+ * own without an `O(n)` traversal from `head`.
+ *
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
+ *
+ * @typeParam L - The type of the list.
+ * @param instance - The list instance.
+ * @param node - The node to remove.
+ * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+ */
+export function removeNode<L extends ISinglyLinkedList>(
+  instance: L,
+  node: NonNullable<L['head']>,
+  previous: L['head']
+) {
+  if (!instance.head) {
+    return;
+  }
+
+  if (node === instance.head) {
+    instance.head = node.next;
+  }
+
+  if (node === instance.tail) {
+    instance.tail = previous;
+  }
+
+  detach(node, previous);
+
+  instance.size -= 1;
 }
 
 /**
@@ -136,7 +174,7 @@ export function shiftNode<L extends ISinglyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return first;
 }
@@ -163,5 +201,5 @@ export function unshiftNode<L extends ISinglyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
 }

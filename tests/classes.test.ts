@@ -260,6 +260,122 @@ describe('Classes', () => {
       });
     });
 
+    describe('Remove a specific node from a list using the "removeNode" method', () => {
+      it('Singly linked list', () => {
+        const list = new SinglyLinkedList();
+
+        const first = new SinglyLinkedListNode();
+        const second = new SinglyLinkedListNode();
+        const third = new SinglyLinkedListNode();
+        const forth = new SinglyLinkedListNode();
+        const fifth = new SinglyLinkedListNode();
+
+        for (const node of [first, second, third, forth, fifth]) {
+          list.pushNode(node);
+        }
+
+        expect(list.removeNode(third, second)).toBe(undefined);
+
+        expect(list.size).toBe(4);
+        expect(second.next).toBe(forth);
+        expect(third.next).toBe(null);
+
+        list.removeNode(first, null);
+
+        expect(list.size).toBe(3);
+        expect(list.head).toBe(second);
+        expect(first.next).toBe(null);
+
+        list.removeNode(fifth, forth);
+
+        expect(list.size).toBe(2);
+        expect(list.tail).toBe(forth);
+        expect(forth.next).toBe(null);
+        expect(fifth.next).toBe(null);
+
+        const newNode = new SinglyLinkedListNode();
+
+        list.pushNode(newNode);
+
+        expect(list.size).toBe(3);
+        expect(list.tail).toBe(newNode);
+        expect(forth.next).toBe(newNode);
+
+        list.removeNode(second, null);
+        list.removeNode(forth, null);
+        list.removeNode(newNode, null);
+
+        expect(list.size).toBe(0);
+        expect(list.head).toBe(null);
+        expect(list.tail).toBe(null);
+        expect(second.next).toBe(null);
+        expect(forth.next).toBe(null);
+        expect(newNode.next).toBe(null);
+      });
+
+      it('Doubly linked list', () => {
+        const list = new DoublyLinkedList();
+
+        const first = new DoublyLinkedListNode();
+        const second = new DoublyLinkedListNode();
+        const third = new DoublyLinkedListNode();
+        const forth = new DoublyLinkedListNode();
+        const fifth = new DoublyLinkedListNode();
+
+        for (const node of [first, second, third, forth, fifth]) {
+          list.pushNode(node);
+        }
+
+        expect(list.removeNode(third)).toBe(undefined);
+
+        expect(list.size).toBe(4);
+        expect(second.next).toBe(forth);
+        expect(third.next).toBe(null);
+        expect(third.previous).toBe(null);
+        expect(forth.previous).toBe(second);
+
+        list.removeNode(first);
+
+        expect(list.size).toBe(3);
+        expect(list.head).toBe(second);
+        expect(first.next).toBe(null);
+        expect(first.previous).toBe(null);
+        expect(second.previous).toBe(null);
+
+        list.removeNode(fifth);
+
+        expect(list.size).toBe(2);
+        expect(list.tail).toBe(forth);
+        expect(forth.next).toBe(null);
+        expect(fifth.next).toBe(null);
+        expect(fifth.previous).toBe(null);
+
+        const newNode = new DoublyLinkedListNode();
+
+        list.pushNode(newNode);
+
+        expect(list.size).toBe(3);
+        expect(list.tail).toBe(newNode);
+        expect(forth.next).toBe(newNode);
+        expect(newNode.next).toBe(null);
+        expect(newNode.previous).toBe(forth);
+
+        list.removeNode(second);
+        list.removeNode(forth);
+        list.removeNode(newNode);
+
+        expect(list.size).toBe(0);
+        expect(list.head).toBe(null);
+        expect(list.tail).toBe(null);
+        expect(second.next).toBe(null);
+        expect(second.previous).toBe(null);
+        expect(forth.next).toBe(null);
+        expect(forth.previous).toBe(null);
+        expect(newNode.next).toBe(null);
+        expect(newNode.previous).toBe(null);
+      });
+    });
+
     describe('Accessing list nodes based on their index number', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();

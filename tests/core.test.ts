@@ -112,6 +112,124 @@ describe('Core', () => {
         expect(list.tail).toBe(null);
       });
     });
+
+    describe('Remove a specific node from a list using the "removeNode" function', () => {
+      it('Singly linked list', () => {
+        const list = singlyLinkedList.list.create();
+
+        const first = singlyLinkedList.node.create();
+        const second = singlyLinkedList.node.create();
+        const third = singlyLinkedList.node.create();
+        const forth = singlyLinkedList.node.create();
+        const fifth = singlyLinkedList.node.create();
+
+        for (const node of [first, second, third, forth, fifth]) {
+          singlyLinkedList.list.pushNode(list, node);
+        }
+
+        expect(singlyLinkedList.list.removeNode(list, third, second)).toBe(
+          undefined
+        );
+
+        expect(list.size).toBe(4);
+        expect(second.next).toBe(forth);
+        expect(third.next).toBe(null);
+
+        singlyLinkedList.list.removeNode(list, first, null);
+
+        expect(list.size).toBe(3);
+        expect(list.head).toBe(second);
+        expect(first.next).toBe(null);
+
+        singlyLinkedList.list.removeNode(list, fifth, forth);
+
+        expect(list.size).toBe(2);
+        expect(list.tail).toBe(forth);
+        expect(forth.next).toBe(null);
+        expect(fifth.next).toBe(null);
+
+        const newNode = singlyLinkedList.node.create();
+
+        singlyLinkedList.list.pushNode(list, newNode);
+
+        expect(list.size).toBe(3);
+        expect(list.tail).toBe(newNode);
+        expect(forth.next).toBe(newNode);
+
+        singlyLinkedList.list.removeNode(list, second, null);
+        singlyLinkedList.list.removeNode(list, forth, null);
+        singlyLinkedList.list.removeNode(list, newNode, null);
+
+        expect(list.size).toBe(0);
+        expect(list.head).toBe(null);
+        expect(list.tail).toBe(null);
+        expect(second.next).toBe(null);
+        expect(forth.next).toBe(null);
+        expect(newNode.next).toBe(null);
+      });
+
+      it('Doubly linked list', () => {
+        const list = doublyLinkedList.list.create();
+
+        const first = doublyLinkedList.node.create();
+        const second = doublyLinkedList.node.create();
+        const third = doublyLinkedList.node.create();
+        const forth = doublyLinkedList.node.create();
+        const fifth = doublyLinkedList.node.create();
+
+        for (const node of [first, second, third, forth, fifth]) {
+          doublyLinkedList.list.pushNode(list, node);
+        }
+
+        expect(doublyLinkedList.list.removeNode(list, third)).toBe(undefined);
+
+        expect(list.size).toBe(4);
+        expect(second.next).toBe(forth);
+        expect(third.next).toBe(null);
+        expect(third.previous).toBe(null);
+        expect(forth.previous).toBe(second);
+
+        doublyLinkedList.list.removeNode(list, first);
+
+        expect(list.size).toBe(3);
+        expect(list.head).toBe(second);
+        expect(first.next).toBe(null);
+        expect(first.previous).toBe(null);
+        expect(second.previous).toBe(null);
+
+        doublyLinkedList.list.removeNode(list, fifth);
+
+        expect(list.size).toBe(2);
+        expect(list.tail).toBe(forth);
+        expect(forth.next).toBe(null);
+        expect(fifth.next).toBe(null);
+        expect(fifth.previous).toBe(null);
+
+        const newNode = doublyLinkedList.node.create();
+
+        doublyLinkedList.list.pushNode(list, newNode);
+
+        expect(list.size).toBe(3);
+        expect(list.tail).toBe(newNode);
+        expect(forth.next).toBe(newNode);
+        expect(newNode.next).toBe(null);
+        expect(newNode.previous).toBe(forth);
+
+        doublyLinkedList.list.removeNode(list, second);
+        doublyLinkedList.list.removeNode(list, forth);
+        doublyLinkedList.list.removeNode(list, newNode);
+
+        expect(list.size).toBe(0);
+        expect(list.head).toBe(null);
+        expect(list.tail).toBe(null);
+        expect(second.next).toBe(null);
+        expect(second.previous).toBe(null);
+        expect(forth.next).toBe(null);
+        expect(forth.previous).toBe(null);
+        expect(newNode.next).toBe(null);
+        expect(newNode.previous).toBe(null);
+      });
+    });
   });
 
   describe('Iterators', () => {

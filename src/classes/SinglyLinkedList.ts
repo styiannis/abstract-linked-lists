@@ -4,6 +4,7 @@ import {
   nodeAt,
   popNode,
   pushNode,
+  removeNode,
   shiftNode,
   unshiftNode,
 } from '../core/singly-linked-list/list';
@@ -224,5 +225,36 @@ export class SinglyLinkedList<
    */
   shiftNode() {
     return shiftNode(this);
+  }
+
+  /**
+   * Removes a specific node from the list.
+   *
+   * The caller must already hold references to both `node` and its
+   * `previous` node, since a singly linked list cannot look either up on its
+   * own without an `O(n)` traversal from `head`.
+   *
+   * @param node - The node to remove.
+   * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+   * @example
+   * ```typescript
+   * const list = new SinglyLinkedList();
+   *
+   * const node1 = new SinglyLinkedListNode();
+   * const node2 = new SinglyLinkedListNode();
+   * const node3 = new SinglyLinkedListNode();
+   *
+   * list.pushNode(node1);
+   * list.pushNode(node2);
+   * list.pushNode(node3);
+   *
+   * list.removeNode(node2, node1);
+   *
+   * console.log(list.size); // 2
+   * console.log(node1.next === node3); // true
+   * ```
+   */
+  removeNode(node: N, previous: N | null) {
+    return removeNode(this, node, previous);
   }
 }

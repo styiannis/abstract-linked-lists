@@ -18,4 +18,12 @@ import { AbstractSinglyLinkedListNode } from './AbstractSinglyLinkedListNode';
  */
 export abstract class AbstractSinglyLinkedList<
   N extends AbstractSinglyLinkedListNode = AbstractSinglyLinkedListNode,
-> extends AbstractLinkedList<N> {}
+> extends AbstractLinkedList<N> {
+  /**
+   * Removes a specific node from the list.
+   *
+   * @param node - The node to remove.
+   * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+   */
+  abstract removeNode(node: N, previous: N | null): void;
+}

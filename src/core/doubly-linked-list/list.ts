@@ -1,4 +1,5 @@
 import { IDoublyLinkedList } from '../../types';
+import { detach } from './node';
 
 /**
  * Creates a new doubly linked list instance.
@@ -89,7 +90,7 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return last;
 }
@@ -117,7 +118,38 @@ export function pushNode<L extends IDoublyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
+}
+
+/**
+ * Removes a specific node from a doubly linked list.
+ *
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
+ *
+ * @typeParam L - The type of the list.
+ * @param instance - The list instance.
+ * @param node - The node to remove.
+ */
+export function removeNode<L extends IDoublyLinkedList>(
+  instance: L,
+  node: NonNullable<L['head']>
+) {
+  if (!instance.head) {
+    return;
+  }
+
+  if (node === instance.head) {
+    instance.head = node.next;
+  }
+
+  if (node === instance.tail) {
+    instance.tail = node.previous;
+  }
+
+  detach(node);
+
+  instance.size -= 1;
 }
 
 /**
@@ -147,7 +179,7 @@ export function shiftNode<L extends IDoublyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return first;
 }
@@ -175,5 +207,5 @@ export function unshiftNode<L extends IDoublyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
 }

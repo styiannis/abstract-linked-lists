@@ -4,6 +4,7 @@ import {
   nodeAt,
   popNode,
   pushNode,
+  removeNode,
   shiftNode,
   unshiftNode,
 } from '../core/doubly-linked-list/list';
@@ -223,5 +224,32 @@ export class DoublyLinkedList<
    */
   shiftNode() {
     return shiftNode(this);
+  }
+
+  /**
+   * Removes a specific node from the list.
+   *
+   * @param node - The node to remove.
+   * @example
+   * ```typescript
+   * const list = new DoublyLinkedList();
+   *
+   * const node1 = new DoublyLinkedListNode();
+   * const node2 = new DoublyLinkedListNode();
+   * const node3 = new DoublyLinkedListNode();
+   *
+   * list.pushNode(node1);
+   * list.pushNode(node2);
+   * list.pushNode(node3);
+   *
+   * list.removeNode(node2);
+   *
+   * console.log(list.size); // 2
+   * console.log(node1.next === node3); // true
+   * console.log(node3.previous === node1); // true
+   * ```
+   */
+  removeNode(node: N) {
+    return removeNode(this, node);
   }
 }
