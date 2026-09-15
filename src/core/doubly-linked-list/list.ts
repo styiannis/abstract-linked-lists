@@ -122,7 +122,7 @@ export function pushNode<L extends IDoublyLinkedList>(
 }
 
 /**
- * Removes a specific node from a doubly linked list.
+ * Removes and returns a specific node from a doubly linked list.
  *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
@@ -130,6 +130,7 @@ export function pushNode<L extends IDoublyLinkedList>(
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  * @param node - The node to remove.
+ * @returns The removed node, or `undefined` if the list is empty.
  */
 export function removeNode<L extends IDoublyLinkedList>(
   instance: L,
@@ -150,6 +151,8 @@ export function removeNode<L extends IDoublyLinkedList>(
   detach(node);
 
   instance.size -= 1;
+
+  return node;
 }
 
 /**

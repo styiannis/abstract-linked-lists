@@ -228,7 +228,7 @@ export class SinglyLinkedList<
   }
 
   /**
-   * Removes a specific node from the list.
+   * Removes and returns a specific node from the list.
    *
    * The caller must already hold references to both `node` and its
    * `previous` node, since a singly linked list cannot look either up on its
@@ -236,6 +236,7 @@ export class SinglyLinkedList<
    *
    * @param node - The node to remove.
    * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+   * @returns The removed node, or `undefined` if the list was empty.
    * @example
    * ```typescript
    * const list = new SinglyLinkedList();

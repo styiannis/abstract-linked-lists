@@ -113,7 +113,7 @@ export function pushNode<L extends ISinglyLinkedList>(
 }
 
 /**
- * Removes a specific node from a singly linked list.
+ * Removes and returns a specific node from a singly linked list.
  *
  * The caller must already hold references to both the `node` and its
  * `previous` node, since a singly linked list cannot look either up on its
@@ -126,6 +126,7 @@ export function pushNode<L extends ISinglyLinkedList>(
  * @param instance - The list instance.
  * @param node - The node to remove.
  * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+ * @returns The removed node, or `undefined` if the list is empty.
  */
 export function removeNode<L extends ISinglyLinkedList>(
   instance: L,
@@ -147,6 +148,8 @@ export function removeNode<L extends ISinglyLinkedList>(
   detach(node, previous);
 
   instance.size -= 1;
+
+  return node;
 }
 
 /**

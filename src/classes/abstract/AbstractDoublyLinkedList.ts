@@ -20,9 +20,10 @@ export abstract class AbstractDoublyLinkedList<
   N extends AbstractDoublyLinkedListNode = AbstractDoublyLinkedListNode,
 > extends AbstractLinkedList<N> {
   /**
-   * Removes a specific node from the list.
+   * Removes and returns a specific node from the list.
    *
    * @param node - The node to remove.
+   * @returns The removed node, or `undefined` if the list is empty.
    */
-  abstract removeNode(node: N): void;
+  abstract removeNode(node: N): N | undefined;
 }

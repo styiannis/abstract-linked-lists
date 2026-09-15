@@ -20,10 +20,11 @@ export abstract class AbstractSinglyLinkedList<
   N extends AbstractSinglyLinkedListNode = AbstractSinglyLinkedListNode,
 > extends AbstractLinkedList<N> {
   /**
-   * Removes a specific node from the list.
+   * Removes and returns a specific node from the list.
    *
    * @param node - The node to remove.
    * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
+   * @returns The removed node, or `undefined` if the list is empty.
    */
-  abstract removeNode(node: N, previous: N | null): void;
+  abstract removeNode(node: N, previous: N | null): N | undefined;
 }

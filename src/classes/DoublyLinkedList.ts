@@ -227,9 +227,10 @@ export class DoublyLinkedList<
   }
 
   /**
-   * Removes a specific node from the list.
+   * Removes and returns a specific node from the list.
    *
    * @param node - The node to remove.
+   * @returns The removed node, or `undefined` if the list was empty.
    * @example
    * ```typescript
    * const list = new DoublyLinkedList();

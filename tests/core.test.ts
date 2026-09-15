@@ -117,6 +117,12 @@ describe('Core', () => {
       it('Singly linked list', () => {
         const list = singlyLinkedList.list.create();
 
+        const singleNode = singlyLinkedList.node.create();
+
+        expect(
+          singlyLinkedList.list.removeNode(list, singleNode, null)
+        ).toBeUndefined();
+
         const first = singlyLinkedList.node.create();
         const second = singlyLinkedList.node.create();
         const third = singlyLinkedList.node.create();
@@ -128,7 +134,7 @@ describe('Core', () => {
         }
 
         expect(singlyLinkedList.list.removeNode(list, third, second)).toBe(
-          undefined
+          third
         );
 
         expect(list.size).toBe(4);
@@ -166,10 +172,20 @@ describe('Core', () => {
         expect(second.next).toBe(null);
         expect(forth.next).toBe(null);
         expect(newNode.next).toBe(null);
+
+        expect(
+          singlyLinkedList.list.removeNode(list, singleNode, null)
+        ).toBeUndefined();
       });
 
       it('Doubly linked list', () => {
         const list = doublyLinkedList.list.create();
+
+        const singleNode = doublyLinkedList.node.create();
+
+        expect(
+          doublyLinkedList.list.removeNode(list, singleNode)
+        ).toBeUndefined();
 
         const first = doublyLinkedList.node.create();
         const second = doublyLinkedList.node.create();
@@ -181,7 +197,7 @@ describe('Core', () => {
           doublyLinkedList.list.pushNode(list, node);
         }
 
-        expect(doublyLinkedList.list.removeNode(list, third)).toBe(undefined);
+        expect(doublyLinkedList.list.removeNode(list, third)).toBe(third);
 
         expect(list.size).toBe(4);
         expect(second.next).toBe(forth);
@@ -228,6 +244,10 @@ describe('Core', () => {
         expect(forth.previous).toBe(null);
         expect(newNode.next).toBe(null);
         expect(newNode.previous).toBe(null);
+
+        expect(
+          doublyLinkedList.list.removeNode(list, singleNode)
+        ).toBeUndefined();
       });
     });
   });

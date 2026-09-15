@@ -264,6 +264,10 @@ describe('Classes', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();
 
+        const singleNode = new SinglyLinkedListNode();
+
+        expect(list.removeNode(singleNode, null)).toBeUndefined();
+
         const first = new SinglyLinkedListNode();
         const second = new SinglyLinkedListNode();
         const third = new SinglyLinkedListNode();
@@ -274,7 +278,7 @@ describe('Classes', () => {
           list.pushNode(node);
         }
 
-        expect(list.removeNode(third, second)).toBe(undefined);
+        expect(list.removeNode(third, second)).toBe(third);
 
         expect(list.size).toBe(4);
         expect(second.next).toBe(forth);
@@ -311,10 +315,16 @@ describe('Classes', () => {
         expect(second.next).toBe(null);
         expect(forth.next).toBe(null);
         expect(newNode.next).toBe(null);
+
+        expect(list.removeNode(singleNode, null)).toBeUndefined();
       });
 
       it('Doubly linked list', () => {
         const list = new DoublyLinkedList();
+
+        const singleNode = new DoublyLinkedListNode();
+
+        expect(list.removeNode(singleNode)).toBe(undefined);
 
         const first = new DoublyLinkedListNode();
         const second = new DoublyLinkedListNode();
@@ -326,7 +336,7 @@ describe('Classes', () => {
           list.pushNode(node);
         }
 
-        expect(list.removeNode(third)).toBe(undefined);
+        expect(list.removeNode(third)).toBe(third);
 
         expect(list.size).toBe(4);
         expect(second.next).toBe(forth);
@@ -373,6 +383,8 @@ describe('Classes', () => {
         expect(forth.previous).toBe(null);
         expect(newNode.next).toBe(null);
         expect(newNode.previous).toBe(null);
+
+        expect(list.removeNode(singleNode)).toBe(undefined);
       });
     });
 
@@ -502,7 +514,7 @@ describe('Classes', () => {
         let i = 0;
         for (const node of list) {
           expect(node).toBe(nodeArray[i]);
-          i++;
+          i += 1;
         }
 
         list.clear();
@@ -521,7 +533,7 @@ describe('Classes', () => {
         let i = 0;
         for (const node of list) {
           expect(node).toBe(nodeArray[i]);
-          i++;
+          i += 1;
         }
 
         list.clear();
