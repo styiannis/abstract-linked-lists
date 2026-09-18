@@ -195,6 +195,8 @@ import {
   nodeAt,
   popNode,
   pushNode,
+  removeNode,
+  removeNodeAfter,
   shiftNode,
   unshiftNode,
 } from 'abstract-linked-lists/singly-linked-list/list';
@@ -222,6 +224,8 @@ import {
   nodeAt,
   popNode,
   pushNode,
+  removeNode,
+  removeNodeAfter,
   shiftNode,
   unshiftNode,
 } from 'abstract-linked-lists/doubly-linked-list/list';
