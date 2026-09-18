@@ -12,6 +12,7 @@
   ],
   "author": "Yiannis Stergiou <hello@styiannis.dev>",
   "license": "MIT",
+  "homepage": "https://github.com/styiannis/abstract-linked-lists",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/styiannis/abstract-linked-lists.git"
@@ -70,9 +71,9 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/jest": "^30.0.0",
     "jest": "^30.5.1",
-    "oxlint": "^1.81.0",
-    "prettier": "^3.9.6",
-    "rollup": "^4.63.1",
+    "oxlint": "^1.83.0",
+    "prettier": "^3.9.8",
+    "rollup": "^4.63.3",
     "rollup-plugin-dts": "^6.5.1",
     "ts-jest": "^29.4.12",
     "tslib": "^2.8.1",
