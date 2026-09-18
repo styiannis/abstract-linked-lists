@@ -16,20 +16,26 @@ export function create<N extends ISinglyLinkedListNode>(
 }
 
 /**
- * Detaches the node by updating the `next` reference of the previous node.
+ * Detaches the node by updating the `next` reference of its predecessor.
  *
- * After detachment, the node's `next` pointer is set to `null`.
+ * After detachment, the node's `next` pointer is set to `null`. If
+ * `predecessor` does not precede `instance`, nothing is changed.
  *
  * @typeParam N - The type of the node.
  * @param instance - The node instance to be detached.
- * @param previous - The previous node, or `null` if the node has no previous connection.
+ * @param predecessor - The preceding node, or `null` if the node has no predecessor.
  */
 export function detach<N extends ISinglyLinkedListNode>(
   instance: N,
-  previous: N | null
+  predecessor: N | null
 ) {
-  if (previous) {
-    previous.next = instance.next;
+  if (predecessor) {
+    if (predecessor.next !== instance) {
+      return;
+    }
+
+    predecessor.next = instance.next;
   }
+
   instance.next = null;
 }

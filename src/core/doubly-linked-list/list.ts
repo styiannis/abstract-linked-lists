@@ -156,6 +156,33 @@ export function removeNode<L extends IDoublyLinkedList>(
 }
 
 /**
+ * Removes and returns the node that follows a given node in a doubly linked list.
+ *
+ * Equivalent to `removeNode`, but positioned relative to `predecessor` instead
+ * of the node itself.
+ *
+ * - Time Complexity: `O(1)`
+ * - Space Complexity: `O(1)`
+ *
+ * @typeParam L - The type of the list.
+ * @param instance - The list instance.
+ * @param predecessor - The node preceding the node to remove.
+ * @returns The removed node, or `undefined` if `predecessor` has no next node.
+ */
+export function removeNodeAfter<L extends IDoublyLinkedList>(
+  instance: L,
+  predecessor: NonNullable<L['head']>
+) {
+  const node: L['head'] = predecessor.next;
+
+  if (!node) {
+    return;
+  }
+
+  return removeNode(instance, node);
+}
+
+/**
  * Removes and returns the first node from a doubly linked list.
  *
  * - Time Complexity: `O(1)`

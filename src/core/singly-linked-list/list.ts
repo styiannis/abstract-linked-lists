@@ -115,37 +115,65 @@ export function pushNode<L extends ISinglyLinkedList>(
 /**
  * Removes and returns a specific node from a singly linked list.
  *
- * The caller must already hold references to both the `node` and its
- * `previous` node, since a singly linked list cannot look either up on its
- * own without an `O(n)` traversal from `head`.
+ * Use `removeNodeAfter` instead when the preceding node is already known and
+ * the `O(n)` traversal is not acceptable.
+ *
+ * - Time Complexity: `O(n)`
+ * - Space Complexity: `O(1)`
+ *
+ * @typeParam L - The type of the list.
+ * @param instance - The list instance.
+ * @param node - The node to remove, located by traversing from `head`.
+ * @returns The removed node, or `undefined` if `node` is not part of the list.
+ */
+export function removeNode<L extends ISinglyLinkedList>(
+  instance: L,
+  node: NonNullable<L['head']>
+) {
+  let previous: L['head'] = null;
+  let current: L['head'] = instance.head;
+
+  while (current && current !== node) {
+    previous = current;
+    current = current.next;
+  }
+
+  if (!current) {
+    return;
+  }
+
+  return previous ? removeNodeAfter(instance, previous) : shiftNode(instance);
+}
+
+/**
+ * Removes and returns the node that follows a given node in a singly linked list.
+ *
+ * Constant-time counterpart to `removeNode`: the caller supplies the
+ * predecessor, so the list does not have to be traversed to find it.
  *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
- * @param node - The node to remove.
- * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
- * @returns The removed node, or `undefined` if the list is empty.
+ * @param predecessor - The node preceding the node to remove.
+ * @returns The removed node, or `undefined` if `predecessor` has no next node.
  */
-export function removeNode<L extends ISinglyLinkedList>(
+export function removeNodeAfter<L extends ISinglyLinkedList>(
   instance: L,
-  node: NonNullable<L['head']>,
-  previous: L['head']
+  predecessor: NonNullable<L['head']>
 ) {
-  if (!instance.head) {
+  const node: L['head'] = predecessor.next;
+
+  if (!node) {
     return;
   }
 
-  if (node === instance.head) {
-    instance.head = node.next;
-  }
-
   if (node === instance.tail) {
-    instance.tail = previous;
+    instance.tail = predecessor;
   }
 
-  detach(node, previous);
+  detach(node, predecessor);
 
   instance.size -= 1;
 

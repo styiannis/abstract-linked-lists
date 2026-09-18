@@ -18,12 +18,4 @@ import { AbstractLinkedList } from './AbstractLinkedList';
  */
 export abstract class AbstractDoublyLinkedList<
   N extends AbstractDoublyLinkedListNode = AbstractDoublyLinkedListNode,
-> extends AbstractLinkedList<N> {
-  /**
-   * Removes and returns a specific node from the list.
-   *
-   * @param node - The node to remove.
-   * @returns The removed node, or `undefined` if the list is empty.
-   */
-  abstract removeNode(node: N): N | undefined;
-}
+> extends AbstractLinkedList<N> {}

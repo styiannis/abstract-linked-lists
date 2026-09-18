@@ -5,6 +5,7 @@ import {
   popNode,
   pushNode,
   removeNode,
+  removeNodeAfter,
   shiftNode,
   unshiftNode,
 } from '../core/singly-linked-list/list';
@@ -230,13 +231,11 @@ export class SinglyLinkedList<
   /**
    * Removes and returns a specific node from the list.
    *
-   * The caller must already hold references to both `node` and its
-   * `previous` node, since a singly linked list cannot look either up on its
-   * own without an `O(n)` traversal from `head`.
+   * The node is located by traversing from `head`, which takes `O(n)` time.
+   * Use `removeNodeAfter` when the preceding node is already known.
    *
    * @param node - The node to remove.
-   * @param previous - The node preceding `node`, or `null` if `node` is the `head`.
-   * @returns The removed node, or `undefined` if the list was empty.
+   * @returns The removed node, or `undefined` if the node is not part of the list.
    * @example
    * ```typescript
    * const list = new SinglyLinkedList();
@@ -249,13 +248,43 @@ export class SinglyLinkedList<
    * list.pushNode(node2);
    * list.pushNode(node3);
    *
-   * list.removeNode(node2, node1);
+   * list.removeNode(node2);
    *
    * console.log(list.size); // 2
    * console.log(node1.next === node3); // true
    * ```
    */
-  removeNode(node: N, previous: N | null) {
-    return removeNode(this, node, previous);
+  removeNode(node: N) {
+    return removeNode(this, node);
+  }
+
+  /**
+   * Removes and returns the node that follows a given node in the list.
+   *
+   * Runs in `O(1)` time, since the position of the removal is supplied by the
+   * caller instead of being looked up.
+   *
+   * @param predecessor - The node preceding the node to remove.
+   * @returns The removed node, or `undefined` if `predecessor` has no next node.
+   * @example
+   * ```typescript
+   * const list = new SinglyLinkedList();
+   *
+   * const node1 = new SinglyLinkedListNode();
+   * const node2 = new SinglyLinkedListNode();
+   * const node3 = new SinglyLinkedListNode();
+   *
+   * list.pushNode(node1);
+   * list.pushNode(node2);
+   * list.pushNode(node3);
+   *
+   * console.log(list.removeNodeAfter(node1) === node2); // true
+   *
+   * console.log(list.size); // 2
+   * console.log(node1.next === node3); // true
+   * ```
+   */
+  removeNodeAfter(predecessor: N) {
+    return removeNodeAfter(this, predecessor);
   }
 }
