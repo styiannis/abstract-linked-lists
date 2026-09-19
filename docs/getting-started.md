@@ -3,7 +3,7 @@
 From an empty project to a list you can add to, walk in both directions, and
 remove from in constant time.
 
-**Last verified:** 2026-09-16 · v1.1.0 · Node ≥ 18.12
+**Last verified:** 2026-09-18 · v1.1.0 · Node ≥ 18.12
 
 ## Install
 
@@ -36,6 +36,7 @@ class Job extends DoublyLinkedListNode {
 const queue = new DoublyLinkedList<Job>();
 
 const first = new Job('j1', 'resize');
+
 queue.pushNode(first);
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -45,10 +46,10 @@ console.log(queue.head?.payload); // authenticate
 console.log(queue.tail?.payload); // upload
 ```
 
-`pushNode` appends, `unshiftNode` prepends, and both are constant time. Pass
-the class as the generic parameter, as `DoublyLinkedList<Job>` does above, and
-`head`, `tail`, `nodeAt` and the iterators all give you back a `Job` rather
-than a bare node.
+`pushNode` appends and `unshiftNode` prepends, both in constant time. Pass
+your class as the generic parameter, the way `DoublyLinkedList<Job>` does
+above: `head`, `tail`, `nodeAt` and the iterators then hand back a `Job`
+rather than a bare node.
 
 ## Walk it
 
@@ -70,6 +71,7 @@ class Job extends DoublyLinkedListNode {
 const queue = new DoublyLinkedList<Job>();
 
 const first = new Job('j1', 'resize');
+
 queue.pushNode(first);
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -88,15 +90,15 @@ console.log(queue.nodeAt(1)?.id); // j1
 console.log(queue.nodeAt(7)); // undefined
 ```
 
-`nodeAt` on a doubly linked list starts from whichever end is closer, so it
-costs `O(min(k, n - k))`. An index outside the list returns `undefined`; the
-library does not throw.
+`nodeAt` on a doubly linked list starts from whichever end is closer, so
+reaching index `k` costs `O(min(k, n - k))`. An index outside the list returns
+`undefined`; the library does not throw.
 
 ## Remove a node you are already holding
 
-This is the operation the structure exists for. You kept a reference to
-`first` when you queued it, so cancelling that job does not require finding it
-first.
+A node in a doubly linked list carries both of its neighbours, so holding the
+node is holding its position. You kept a reference to `first` when you queued
+it, so cancelling that job does not require finding it first.
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -113,6 +115,7 @@ class Job extends DoublyLinkedListNode {
 const queue = new DoublyLinkedList<Job>();
 
 const first = new Job('j1', 'resize');
+
 queue.pushNode(first);
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -126,15 +129,22 @@ console.log(queue.size); // 2
 console.log(first.previous, first.next); // null null
 ```
 
-`removeNode` is constant time wherever the node sits — `first` above was
-already in the middle of the queue, not an end. It reassigns `head` or `tail`
-if the node was an end, unlinks it from its neighbours, decrements `size`, and
-hands the node back — or `undefined` if the list was already empty, which is
-the one thing the call can tell you that you did not already know. The node
-comes back isolated, so it can be pushed straight into another list.
+On a doubly linked list `removeNode` is constant time wherever the node sits —
+`first` above was already in the middle of the queue, not an end. It reassigns
+`head` or `tail` if the node was an end, unlinks it from its neighbours,
+decrements `size`, and hands the node back. It returns `undefined` only when
+the list was already empty. Since you are holding the node, that is the only
+case where the return value tells you anything. The node comes back isolated,
+so it can be pushed straight into another list.
+
+On a `SinglyLinkedList` the same call is `O(n)`: a node with no `previous`
+pointer does not locate itself, so the list walks from `head` to find the
+predecessor it has to relink.
+[Choose singly or doubly](#choose-singly-or-doubly) covers that and the
+constant-time alternative.
 
 A lower-level `detach()` exists on the node itself, without the list-side
-bookkeeping; [faq.md](faq.md) covers the difference and when it shows up.
+bookkeeping. [faq.md](faq.md) covers the difference and when it shows up.
 
 ## Take from either end
 
@@ -154,6 +164,7 @@ class Job extends DoublyLinkedListNode {
 }
 
 const q3 = new DoublyLinkedList<Job>();
+
 q3.pushNode(new Job('a', 'one'));
 q3.pushNode(new Job('b', 'two'));
 
@@ -168,15 +179,21 @@ shape as `removeNode`. On a doubly linked list both are constant time.
 
 ## Choose singly or doubly
 
-Use `SinglyLinkedList` when you only ever add and remove at the head and walk
-forward. It costs eight bytes less per node — 40 against 48 for a node
-carrying one number — and that is the whole of the difference in its favour.
+The two classes expose the same methods, so the choice is one of cost.
+`pushNode`, `unshiftNode`, `shiftNode` and forward iteration are unchanged on
+a `SinglyLinkedList`. `popNode`, `nodeAt`, `removeNode` and reverse iteration
+are not.
 
-Everything else favours the doubly linked list. `popNode` on a singly linked
-list walks the entire list to reach the predecessor of the last node, reverse
-iteration builds a stack of every node instead of following `previous`
-pointers, and `removeNode` has to find the node's predecessor by walking from
-`head`:
+Use `SinglyLinkedList` when you only ever add and remove at the head and walk
+forward. It costs one pointer less per node, and that is the whole of the
+difference in its favour.
+
+Everything else favours the doubly linked list. On a singly linked list
+`nodeAt` always walks from `head`, since without `previous` pointers there is
+no nearer end to start from, and reverse iteration builds a stack of every
+node instead of following those pointers. `popNode` walks the whole list to
+reach the predecessor of the last node, and `removeNode` has to find the
+node's predecessor by walking from `head`:
 
 ```typescript
 import { SinglyLinkedList, SinglyLinkedListNode } from 'abstract-linked-lists';
@@ -188,6 +205,7 @@ class Item extends SinglyLinkedListNode {
 }
 
 const list = new SinglyLinkedList<Item>();
+
 [1, 2, 3].forEach((value) => list.pushNode(new Item(value)));
 
 const second = list.nodeAt(1)!;
@@ -200,28 +218,45 @@ console.log(
 ```
 
 The call is `O(n)` rather than the `O(1)` of its doubly linked counterpart, so
-in a singly linked list a removal that is not at the head is a walk, whatever
-the shape of the API suggests.
+in a singly linked list a removal that is not at the head is a walk, even
+though the two lists expose the same method.
 
 When the predecessor is already in hand — mid-traversal, or because you kept
-it — `removeNodeAfter` skips the search and removes in constant time:
+it — `removeNodeAfter` skips the search and removes in constant time. The same
+removal as above, reached from the other side:
 
 ```typescript
+import { SinglyLinkedList, SinglyLinkedListNode } from 'abstract-linked-lists';
+
+class Item extends SinglyLinkedListNode {
+  constructor(public readonly value: number) {
+    super();
+  }
+}
+
+const list = new SinglyLinkedList<Item>();
+
+[1, 2, 3].forEach((value) => list.pushNode(new Item(value)));
+
 const first = list.nodeAt(0)!;
 
-console.log(list.removeNodeAfter(first)?.value); // 3
-console.log(list.size); // 1
+console.log(list.removeNodeAfter(first)?.value); // 2
+console.log(
+  list.size,
+  [...list].map((item) => item.value)
+); // 2 [ 1, 3 ]
 ```
 
-It exists on `DoublyLinkedList` too, for the same interface, though there
+The same node is gone and the same list is left behind, without the walk. The
+method exists on `DoublyLinkedList` too, for the same interface, though there
 `removeNode` is already constant time.
 
 ## The same operations without the classes
 
 Every method shown above is one line: `DoublyLinkedList.popNode` is
-`return popNode(this)`, and the rest have that shape too. The functions it
-delegates to are exported, so the whole API is available over plain objects,
-with no class involved and the same complexity:
+`return popNode(this)`, and the rest have that shape too. The functions the
+classes delegate to are exported, so the whole API is available over plain
+objects, with no class involved and the same complexity:
 
 ```typescript
 import {
@@ -257,8 +292,9 @@ add rather than delegate. Hence `iterators.inOrder(list.head)` above, where
 the class form would be `for...of`.
 
 Neither form is the wrapper of the other: they operate on the same shapes, so
-a class instance can be passed to these functions and an object like `Entry`
-can be handed to code expecting a list. Which one you use is a question of the
+a class instance can be passed to these functions, and an object like `Entry`
+satisfies `IDoublyLinkedListNode` structurally and can be handed to
+`doublyLinkedList.list` unmodified. Which one you use is a question of the
 style your project is written in — with one case where it is not a preference,
 described in
 [architecture-and-api.md](architecture-and-api.md#two-layers).

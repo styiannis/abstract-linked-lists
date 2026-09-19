@@ -3,250 +3,241 @@
 [![NPM Version](https://img.shields.io/npm/v/abstract-linked-lists)](https://www.npmjs.com/package/abstract-linked-lists)
 [![Coverage Status](https://img.shields.io/coverallsCoverage/github/styiannis/abstract-linked-lists)](https://coveralls.io/github/styiannis/abstract-linked-lists?branch=main)
 
-A TypeScript library that provides implementations of singly and doubly linked lists, designed to support both object-oriented and functional programming paradigms.
+Singly and doubly linked lists for TypeScript in which **your object is the
+node**. The list stores no values of its own, so an element you already hold
+is removed from where it sits. On a doubly linked list, that takes constant
+time and no search.
 
-## Key Features
-
-- 🔧 **Dual Programming Support**: Facilitates both object-oriented and functional programming approaches, allowing developers to choose the style that best fits their project requirements.
-
-- 🔒 **Type Safety**: Utilizes Typescript generics and strict typing to ensure type correctness and reduce runtime errors.
-
-- ⚡ **Performance Optimization**: Implements efficient memory usage and optimized operations to enhance performance.
-
-- 📐 **Modular Architecture**: Enables tree-shakeable imports, allowing developers to include only the necessary modules and minimize bundle size.
-
-- 🏗️ **Extensibility**: Provides abstract base classes and interfaces that can be extended to create custom linked list implementations tailored to specific needs.
-
-## Table of Contents
-
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-  - [Using Class-Based Implementation](#using-class-based-implementation)
-  - [Using Functional Implementation](#using-functional-implementation)
-- [Importing Modules](#importing-modules)
-  - [Importing the Entire Package](#importing-the-entire-package)
-  - [Importing Specific List Types](#importing-specific-list-types)
-  - [Importing Individual Functions](#importing-individual-functions)
-- [Code documentation](#code-documentation)
-- [Issues and Support](#issues-and-support)
-- [License](#license)
-
-## System Requirements
-
-| Package     | Version    |
-| ----------- | ---------- |
-| **Node.js** | ≥ `18.0.0` |
-| **npm**     | ≥ `8.0.0`  |
-
-## Installation
-
-### Install via npm
+## Install
 
 ```bash
 npm install abstract-linked-lists
 ```
 
-### Install via yarn
+`yarn add` and `pnpm add` work the same way. The package requires Node 18.12 or
+later, and ships an ES build and a CommonJS build with type definitions for each.
 
-```bash
-yarn add abstract-linked-lists
+## The node is the abstraction
+
+A `SinglyLinkedListNode` has exactly one property, `next`. A
+`DoublyLinkedListNode` has two, `previous` and `next`. Neither has a value
+field, because the value is whatever you extend the node with:
+
+```typescript
+import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
+
+class TaskNode extends DoublyLinkedListNode {
+  constructor(public readonly name: string) {
+    super();
+  }
+}
+
+const queue = new DoublyLinkedList<TaskNode>();
+
+const fetchTask = new TaskNode('fetch');
+
+queue.pushNode(fetchTask);
+queue.pushNode(new TaskNode('parse'));
+
+queue.unshiftNode(new TaskNode('auth'));
+
+console.log(queue.size); // 3
+console.log(queue.head?.name, queue.tail?.name); // auth parse
+
+for (const node of queue) {
+  console.log(node.name); // auth, fetch, parse
+}
+
+for (const node of queue[Symbol.iterator](true)) {
+  console.log(node.name); // parse, fetch, auth
+}
 ```
 
-### Install via pnpm
+The generic parameter carries the subclass through, so `head`, `tail`,
+`nodeAt` and the iterators all return `TaskNode`.
 
-```bash
-pnpm install abstract-linked-lists
+## Removal without a search
+
+Because the caller owns the node, an element can be unlinked from a position
+it already holds. `removeNode` takes the node itself, relinks its neighbours,
+reassigns `head` or `tail` if it was an end, decrements `size`, and returns
+the node it removed:
+
+```typescript
+import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
+
+class TaskNode extends DoublyLinkedListNode {
+  constructor(public readonly name: string) {
+    super();
+  }
+}
+
+const queue = new DoublyLinkedList<TaskNode>();
+
+const fetchTask = new TaskNode('fetch');
+
+queue.pushNode(fetchTask);
+queue.pushNode(new TaskNode('parse'));
+
+queue.unshiftNode(new TaskNode('auth'));
+
+console.log(queue.removeNode(fetchTask)?.name); // fetch
+console.log(queue.size); // 2
+console.log([...queue].map((t) => t.name)); // [ 'auth', 'parse' ]
 ```
 
-## Getting Started
+Constant time wherever the node sits, and the node comes back isolated. An
+empty list returns `undefined`.
 
-Here's a quick guide to help you get started with the library.
-
-### Using Class-Based Implementation
+On a singly linked list the same call finds the node's predecessor by walking
+from `head`, so its cost grows with the length of the list — a node carrying
+one pointer cannot look backwards. Where that predecessor is already in hand,
+`removeNodeAfter(predecessor)` removes what follows it in constant time on
+either structure:
 
 ```typescript
 import { SinglyLinkedList, SinglyLinkedListNode } from 'abstract-linked-lists';
 
-// Create a new list
-const list = new SinglyLinkedList();
-
-// Create node instances
-const node_a = new SinglyLinkedListNode();
-const node_b = new SinglyLinkedListNode();
-
-// Add nodes to the list
-list.pushNode(node_a);
-list.pushNode(node_b);
-
-// Iterate over list nodes
-for (const node of list) {
-  console.log(node);
+class TaskNode extends SinglyLinkedListNode {
+  constructor(public readonly name: string) {
+    super();
+  }
 }
+
+const stack = new SinglyLinkedList<TaskNode>();
+
+const authTask = new TaskNode('auth');
+
+stack.pushNode(authTask);
+stack.pushNode(new TaskNode('fetch'));
+stack.pushNode(new TaskNode('parse'));
+
+console.log(stack.removeNodeAfter(authTask)?.name); // fetch
+console.log([...stack].map((t) => t.name)); // [ 'auth', 'parse' ]
 ```
 
-### Using Functional Implementation
+An `Array` has no removal by reference. Removing a given object from one means
+finding it with `indexOf` and closing the gap with `splice`, and both cost time
+in proportion to the array's length. On a doubly linked list, removal costs the
+same at any length.
 
-```typescript
-import { singlyLinkedList } from 'abstract-linked-lists';
+## Two APIs over the same structures
 
-const { create: createNode } = singlyLinkedList.node;
-const { create: createList, pushNode } = singlyLinkedList.list;
-const { inOrder } = singlyLinkedList.iterators;
-
-// Create a new list
-const list = createList();
-
-// Create node instances
-const node_a = createNode();
-const node_b = createNode();
-
-// Add nodes to the list
-pushNode(list, node_a);
-pushNode(list, node_b);
-
-// Iterate over list nodes
-for (const node of inOrder(list.head)) {
-  console.log(node);
-}
-```
-
-## Importing Modules
-
-The library offers flexible import options to suit different development needs. You can import everything at once, focus on specific list types, or select individual functions as needed.
-
-### Importing the Entire Package
-
-To access all classes, interfaces, and functional APIs:
+The classes above delegate to a layer of plain functions that operate on plain
+objects. That layer is exported as well, for code that would rather not
+allocate class instances:
 
 ```typescript
 import {
-  // Concrete Classes
-  SinglyLinkedList,
-  SinglyLinkedListNode,
-  DoublyLinkedList,
-  DoublyLinkedListNode,
-
-  // Abstract Base Classes
-  AbstractLinkedList,
-  AbstractSinglyLinkedList,
-  AbstractSinglyLinkedListNode,
-  AbstractDoublyLinkedList,
-  AbstractDoublyLinkedListNode,
-
-  // Interfaces
-  ILinkedList,
-  ISinglyLinkedList,
-  ISinglyLinkedListNode,
+  doublyLinkedList,
   IDoublyLinkedList,
   IDoublyLinkedListNode,
+} from 'abstract-linked-lists';
 
-  // Functional APIs
-  singlyLinkedList,
-  doublyLinkedList,
+const { iterators, list: dll, node: dllNode } = doublyLinkedList;
+
+interface Entry extends IDoublyLinkedListNode {
+  key: string;
+}
+
+const list = dll.create<IDoublyLinkedList<Entry>>();
+
+for (const key of ['x', 'y', 'z']) {
+  dll.pushNode(list, { ...dllNode.create<Entry>(), key });
+}
+
+console.log(list.size, list.head?.key, list.tail?.key); // 3 x z
+console.log([...iterators.inReverseOrder(list.tail)].map((n) => n.key)); // [ 'z', 'y', 'x' ]
+```
+
+## Importing
+
+Everything the package exports is available from its root:
+
+```typescript
+import {
+  SinglyLinkedList, // class
+  DoublyLinkedList, // class
+  SinglyLinkedListNode, // class, to extend with your own fields
+  DoublyLinkedListNode, // class, to extend with your own fields
+  singlyLinkedList, // the functions SinglyLinkedList delegates to
+  doublyLinkedList, // the functions DoublyLinkedList delegates to
+  type ISinglyLinkedListNode, // { next }
+  type IDoublyLinkedListNode, // { previous, next }
 } from 'abstract-linked-lists';
 ```
 
-This approach is convenient when you need a broad range of functionalities from the library.
+The same root exports the five abstract classes listed under [API](#api) and
+the list interfaces `ILinkedList`, `ISinglyLinkedList` and `IDoublyLinkedList`.
 
-### Importing Specific List Types
-
-If you're working with a particular type of linked list, you can import related modules directly.
-
-#### For Singly Linked List
-
-```typescript
-import {
-  node,
-  list,
-  iterators,
-} from 'abstract-linked-lists/singly-linked-list';
-```
-
-#### For Doubly Linked List
+Each structure is additionally published under its own subpath, and each of
+its modules (`list`, `node`, `iterators`) under one more, for code that should
+carry nothing else:
 
 ```typescript
-import {
-  node,
-  list,
-  iterators,
-} from 'abstract-linked-lists/doubly-linked-list';
+import * as dll from 'abstract-linked-lists/doubly-linked-list';
+import { pushNode } from 'abstract-linked-lists/doubly-linked-list/list';
+
+console.log(pushNode === dll.list.pushNode); // true
 ```
 
-This method helps keep your bundle size small by only including necessary modules.
+## API
 
-### Importing Individual Functions
+`SinglyLinkedList<N>` and `DoublyLinkedList<N>` expose the same members and
+differ only in what those cost. They extend `AbstractSinglyLinkedList<N>` and
+`AbstractDoublyLinkedList<N>`, which both extend `AbstractLinkedList<N>`. Those
+three and the two abstract node classes, `AbstractSinglyLinkedListNode` and
+`AbstractDoublyLinkedListNode`, are exported for implementations of your own.
 
-For maximum control and minimal footprint, import individual functions or operations.
+| Member                         | Singly                                  | Doubly          |
+| ------------------------------ | --------------------------------------- | --------------- |
+| `size` `head` `tail`           | ✓                                       | ✓               |
+| `pushNode(node)`               | `O(1)`                                  | `O(1)`          |
+| `unshiftNode(node)`            | `O(1)`                                  | `O(1)`          |
+| `removeNode(node)`             | `O(n)`, walks from `head`               | `O(1)`          |
+| `removeNodeAfter(predecessor)` | `O(1)`                                  | `O(1)`          |
+| `shiftNode()`                  | `O(1)`                                  | `O(1)`          |
+| `popNode()`                    | `O(n)`                                  | `O(1)`          |
+| `nodeAt(k)`                    | `O(k)`                                  | `O(min(k,n-k))` |
+| `clear()`                      | `O(n)`                                  | `O(n)`          |
+| `[Symbol.iterator](reversed?)` | `O(n)`                                  | `O(n)`          |
+| `node.detach(...)`             | `O(1)`, caller supplies the predecessor | `O(1)`          |
 
-#### Singly Linked List Functions
+Reverse iteration on a singly linked list first copies every node onto a
+stack, so it takes `O(n)` space. On a doubly linked list it follows the
+`previous` pointers in constant space.
 
-```typescript
-// Node operations
-import {
-  create as createNode,
-  detach,
-} from 'abstract-linked-lists/singly-linked-list/node';
+Nothing in the library throws. An index out of range, or a removal from an
+empty list, returns `undefined`. Most calls also do not check that a node they
+are given belongs to the list: a node from another list is acted on as though
+it did, and both lists can be left inconsistent.
+[The FAQ](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/faq.md#what-happens-instead-of-an-error)
+lists every such case.
 
-// List operations
-import {
-  create as createList,
-  clear,
-  nodeAt,
-  popNode,
-  pushNode,
-  removeNode,
-  removeNodeAfter,
-  shiftNode,
-  unshiftNode,
-} from 'abstract-linked-lists/singly-linked-list/list';
+## When not to use it
 
-// Iterators
-import {
-  inOrder,
-  inReverseOrder,
-} from 'abstract-linked-lists/singly-linked-list/iterators';
-```
+A linked list pays for its constant-time edits with a pointer in every node
+and a walk for every traversal. What follows are the cases where nothing is
+bought with them.
 
-#### Doubly Linked List Functions
+| If this describes the problem                     | Reach for                                                                                                                                                                                                                                    |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mostly traversal or indexing                      | an `Array` — both visit every element, but scanning contiguous memory is [several times faster](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/architecture-and-api.md#complexity-as-implemented) than following pointers |
+| Elements are appended and iterated, never removed | an `Array` — the list's advantage is removal from a held reference, and nothing here would use it                                                                                                                                            |
+| Elements are looked up by key                     | a `Map`, alone or kept beside the list — `pushNode` indexes nothing, and there is no `find`                                                                                                                                                  |
+| A container that owns its values                  | a wrapper written on top — `pushNode` takes a node, not a value, and there is no `push(value)`, `indexOf` or `filter`                                                                                                                        |
+| Removal from the tail of a singly linked list     | `DoublyLinkedList` — the singly linked `popNode` walks the whole list to reach the tail's predecessor, while the doubly linked one pops in constant time for one more pointer per node                                                       |
+| One object in two lists at once                   | a separate node per list — a node has one set of pointers, and pushing it into a second list overwrites them                                                                                                                                 |
 
-```typescript
-// Node operations
-import {
-  create as createNode,
-  detach,
-} from 'abstract-linked-lists/doubly-linked-list/node';
+## Documentation
 
-// List operations
-import {
-  create as createList,
-  clear,
-  nodeAt,
-  popNode,
-  pushNode,
-  removeNode,
-  removeNodeAfter,
-  shiftNode,
-  unshiftNode,
-} from 'abstract-linked-lists/doubly-linked-list/list';
+- [Guides, the FAQ and the architecture write-up](https://github.com/styiannis/abstract-linked-lists/tree/main/docs) —
+  getting a list running, the behaviour that surprises people, and how the
+  library is built, including what a node measurably costs.
+- [The generated API reference](https://styiannis.github.io/abstract-linked-lists/) —
+  every signature and every type.
+- [Open an issue](https://github.com/styiannis/abstract-linked-lists/issues)
+  for a question or a bug report.
 
-// Iterators
-import {
-  inOrder,
-  inReverseOrder,
-} from 'abstract-linked-lists/doubly-linked-list/iterators';
-```
-
-By importing only what you need, you optimize performance and maintain a clean codebase.
-
-## Code documentation
-
-The complete API reference of the library is available at the [code documentation site](https://styiannis.github.io/abstract-linked-lists/).
-
-## Issues and Support
-
-If you encounter any issues or have questions, please [open an issue](https://github.com/styiannis/abstract-linked-lists/issues).
-
-## License
-
-This project is licensed under the [MIT License](https://github.com/styiannis/abstract-linked-lists?tab=MIT-1-ov-file#readme).
+Released under the
+[MIT License](https://github.com/styiannis/abstract-linked-lists/blob/main/LICENSE).

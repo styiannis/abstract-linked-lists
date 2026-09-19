@@ -1,14 +1,15 @@
 {
   "name": "abstract-linked-lists",
   "version": "1.1.0",
-  "description": "A TypeScript library that provides implementations of singly and doubly linked lists, designed to support both object-oriented and functional programming paradigms.",
+  "description": "Singly and doubly linked lists for TypeScript, reduced to a node that holds nothing but its pointers, for your own objects to extend.",
   "keywords": [
-    "abstract data structures",
-    "abstract data types",
-    "data structures",
-    "doubly linked list",
+    "intrusive",
     "linked list",
-    "singly linked list"
+    "doubly linked list",
+    "singly linked list",
+    "intrusive linked list",
+    "data structures",
+    "typescript"
   ],
   "author": "Yiannis Stergiou <hello@styiannis.dev>",
   "license": "MIT",

@@ -3,14 +3,14 @@
 Behaviour that surprises readers of the API, what the library does instead of
 throwing, and the questions the package shape raises.
 
-**Last verified:** 2026-09-16 · v1.1.0
+**Last verified:** 2026-09-19 · v1.1.0
 
 ## Behaviour
 
 ### `size` did not change when I called `detach()`
 
 `detach()` is a method on the node, and a node holds no reference to the list
-it belongs to. It relinks its neighbours and clears its own pointers; it
+it belongs to. It relinks its neighbours and clears its own pointers. It
 cannot update a `size` it cannot see.
 
 ```typescript
@@ -26,7 +26,9 @@ class Job extends DoublyLinkedListNode {
 }
 
 const queue = new DoublyLinkedList<Job>();
+
 const first = new Job('j1', 'resize');
+
 queue.pushNode(first);
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -53,7 +55,9 @@ class Job extends DoublyLinkedListNode {
 }
 
 const queue = new DoublyLinkedList<Job>();
+
 const first = new Job('j1', 'resize');
+
 queue.pushNode(first);
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -63,11 +67,6 @@ queue.removeNode(first);
 console.log([...queue].map((job) => job.id)); // [ 'j0', 'j2' ]
 console.log(queue.size); // 2
 ```
-
-The same call works on a singly linked list, where it finds the node's
-predecessor by walking from `head` and so costs `O(n)`. If you already hold
-that predecessor, `list.removeNodeAfter(predecessor)` removes the node after
-it in constant time.
 
 ### `head` or `tail` still points at a node I detached
 
@@ -84,8 +83,10 @@ class Job extends DoublyLinkedListNode {
 }
 
 const list = new DoublyLinkedList<Job>();
-list.pushNode(new Job('a'));
+
 const c = new Job('c');
+
+list.pushNode(new Job('a'));
 list.pushNode(c);
 
 c.detach();
@@ -100,8 +101,9 @@ unlinks, which is the reason to prefer it to a bare `detach()`.
 
 ### What does `clear()` do to my nodes?
 
-It resets the list — `size` to `0`, `head` and `tail` to `null` — and touches
-no node at all. The nodes remain linked to each other:
+It detaches every one of them. Walking from `head`, it sets each node's `next`,
+and on a doubly linked list its `previous`, to `null`. Then it resets the list:
+`size` to `0`, `head` and `tail` to `null`.
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -113,34 +115,43 @@ class Job extends DoublyLinkedListNode {
 }
 
 const list = new DoublyLinkedList<Job>();
+
 const n1 = new Job('n1');
 const n2 = new Job('n2');
+
 list.pushNode(n1);
 list.pushNode(n2);
 
 list.clear();
 
 console.log(list.size, list.head); // 0 null
-console.log(n1.next === n2); // true
+console.log(n1.next, n2.previous); // null null
 ```
 
-That is usually what you want, because it makes `clear()` constant time and
-leaves any chain you still hold a reference to intact. If the nodes must be
-isolated, walk the list and detach each one before clearing.
+No node leaves the list still pointing into it. Each one can be pushed into
+another list as it is, and holding a reference to one of them does not keep the
+rest of the old list in memory.
 
 ### Why is `node.next` typed as the base class instead of my subclass?
 
-`DoublyLinkedListNode.next` is declared as `DoublyLinkedListNode | null` and
-`SinglyLinkedListNode.next` as `SinglyLinkedListNode | null`. The list is
-generic in its node type, so `list.head` and `list.nodeAt(i)` return your
-subclass, but a step taken from one node to its neighbour is typed as the
-base.
+`next` and `previous` are declared on the base type: `DoublyLinkedListNode | null`
+on the class, `IDoublyLinkedListNode | null` on the interface, and likewise for
+the singly linked variants. The list is generic in its node type, so `head`,
+`tail`, `nodeAt` and the iterators return your type, but a step from a node to
+its neighbour is typed as the base.
 
-Narrow the two pointers once, on your own class, with `declare` — a type-only
-redeclaration that emits no code and changes nothing at runtime:
+Narrow the pointers once, where your node type is declared. On a class,
+`declare` redeclares them without emitting code or changing anything at
+runtime. On an interface, redeclaring them is enough:
 
 ```typescript
-import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
+import {
+  DoublyLinkedList,
+  DoublyLinkedListNode,
+  doublyLinkedList,
+  IDoublyLinkedList,
+  IDoublyLinkedListNode,
+} from 'abstract-linked-lists';
 
 class Job extends DoublyLinkedListNode {
   declare previous: Job | null;
@@ -151,23 +162,31 @@ class Job extends DoublyLinkedListNode {
   }
 }
 
-const queue = new DoublyLinkedList<Job>();
-const a = new Job('a');
-const b = new Job('b');
-queue.pushNode(a);
-queue.pushNode(b);
-
-console.log(a.next?.id); // b
-
-let cursor: Job | null = queue.head;
-while (cursor) {
-  console.log(cursor.id); // a, then b
-  cursor = cursor.next;
+interface Entry extends IDoublyLinkedListNode {
+  previous: Entry | null;
+  next: Entry | null;
+  key: string;
 }
+
+const queue = new DoublyLinkedList<Job>();
+
+queue.pushNode(new Job('a'));
+queue.pushNode(new Job('b'));
+
+console.log(queue.head?.next?.id); // b
+
+const { list: dll, node: dllNode } = doublyLinkedList;
+
+const entries = dll.create<IDoublyLinkedList<Entry>>();
+
+dll.pushNode(entries, { ...dllNode.create<Entry>(), key: 'x' });
+dll.pushNode(entries, { ...dllNode.create<Entry>(), key: 'y' });
+
+console.log(entries.head?.next?.key); // y
 ```
 
-No cast at the step, and nothing is loosened by it: assigning a different node
-subclass to `a.next` is still a compile error.
+Neither form loosens anything: assigning a different node type to `next` is
+still a compile error.
 
 ### How do I iterate in reverse?
 
@@ -187,6 +206,7 @@ class Job extends DoublyLinkedListNode {
 }
 
 const queue = new DoublyLinkedList<Job>();
+
 queue.pushNode(new Job('j1', 'resize'));
 queue.pushNode(new Job('j2', 'upload'));
 queue.unshiftNode(new Job('j0', 'authenticate'));
@@ -202,9 +222,10 @@ iterator first pushes every node onto a stack and then drains it: the same
 
 ### Can I remove nodes while iterating over the list?
 
-No. The iterator holds the current node and reads `next` from it to advance,
-and both `removeNode` and `detach()` set that pointer to `null`, so the walk
-ends at the node you removed:
+Not the node the iterator is currently on. To advance, the iterator reads the
+current node's `next`, or its `previous` when walking a doubly linked list
+backwards. `removeNode` and `detach()` both set those pointers to `null`, so
+the walk stops at the node you removed:
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -216,12 +237,15 @@ class Job extends DoublyLinkedListNode {
 }
 
 const l = new DoublyLinkedList<Job>();
+
 ['w', 'x', 'y', 'z'].forEach((id) => l.pushNode(new Job(id)));
 
 const seen: string[] = [];
 for (const n of l) {
   seen.push(n.id);
-  if (n.id === 'x') l.removeNode(n);
+  if (n.id === 'x') {
+    l.removeNode(n);
+  }
 }
 
 console.log(seen); // [ 'w', 'x' ]
@@ -229,14 +253,25 @@ console.log(l.size); // 3
 console.log([...l].map((n) => n.id)); // [ 'w', 'y', 'z' ]
 ```
 
-The list is left correct; it is the walk that stops early. Collect first and
-mutate afterwards — `[...list]` gives you a snapshot to iterate safely.
+The list itself is correct afterwards. Only the walk ended early.
+
+Removing any node other than the current one is safe. The removal relinks
+around it, and the iterator follows the new links.
+
+All of this holds for forward iteration on both structures and for reverse
+iteration on a doubly linked list. Reverse iteration on a singly linked list
+works differently. It first copies every node onto a stack, then walks the
+stack rather than the links. Removals made during the walk do not affect it:
+it never stops early, and it still visits nodes removed after it started.
+
+In every case, to remove safely the node you are on, iterate over a snapshot:
+`for (const n of [...list])`.
 
 ### Can the same node be in two lists at once?
 
-No, and nothing prevents you from trying. A node has one `next` and one
-`previous`, so it can occupy one position in one chain. Pushing it into a
-second list rewrites those pointers and silently joins the two structures:
+No, but nothing stops you from trying. A node has a single set of pointers,
+so it can hold one position in one chain. Pushing it into a second list
+overwrites those pointers and silently joins the two lists:
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -249,8 +284,10 @@ class Job extends DoublyLinkedListNode {
 
 const a = new DoublyLinkedList<Job>();
 a.pushNode(new Job('a1'));
+
 const b = new DoublyLinkedList<Job>();
 b.pushNode(new Job('b1'));
+
 const shared = new Job('s');
 
 a.pushNode(shared); // list a: a1 -> s
@@ -261,14 +298,14 @@ console.log([...a[Symbol.iterator](true)].map((n) => n.id)); // [ 's', 'b1' ]
 ```
 
 Walking `a` forwards looks right. Walking it backwards from its tail leaves
-`a` entirely and ends up in `b`. A node belongs to one list; put a second node
+`a` entirely and ends up in `b`. A node belongs to one list. Put a second node
 in the other one.
 
 ### What happens if I push a node that is already linked to something?
 
-`pushNode` and `unshiftNode` write the pointers they need and do not clear the
-ones they do not. A node arriving with a live `next` keeps it, and the list
-inherits a tail it never counted:
+Its old links are overwritten. `pushNode` and `unshiftNode` set every pointer
+the node has, so it arrives with no neighbours except the ones the list gives
+it:
 
 ```typescript
 import { SinglyLinkedList, SinglyLinkedListNode } from 'abstract-linked-lists';
@@ -280,23 +317,28 @@ class Item extends SinglyLinkedListNode {
 }
 
 const list = new SinglyLinkedList<Item>();
-const stray = new Item(9);
 
+const stray = new Item(9);
 stray.next = new Item(99);
+
 list.pushNode(stray);
 
 console.log(list.size); // 1
-console.log([...list].map((n) => n.value)); // [ 9, 99 ]
+console.log([...list].map((n) => n.value)); // [ 9 ]
+console.log(stray.next); // null
 ```
 
-Push nodes that are isolated: freshly constructed, or detached from wherever
-they were.
+Only the pushed node's own pointers change. If it was still in another list,
+that list and the neighbours it had there continue pointing at it, as in
+[the previous question](#can-the-same-node-be-in-two-lists-at-once). To move a
+node, remove it from its list first and then push it into the new one.
 
 ### Why did constructing a node change the nodes I passed to it?
 
-Because the constructor links the new node into them. `new
-DoublyLinkedListNode(previous, next)` sets `previous.next` and `next.previous`
-to itself:
+Because the constructor links the new node to them.
+`new DoublyLinkedListNode(previous, next)` sets its own `previous` and `next`,
+and also `previous.next` and `next.previous`, so the new node sits between the
+two:
 
 ```typescript
 import { DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -309,16 +351,22 @@ class Nd extends DoublyLinkedListNode {
 
 const a = new Nd('a');
 const b = new Nd('b');
+
 const middle = new DoublyLinkedListNode(a, b);
 
 console.log(a.next === middle, b.previous === middle); // true true
 ```
 
-It is a convenience for building a chain by hand, and it is the one place
-where a constructor writes to its arguments. It also does not touch any list:
-a node spliced in this way is invisible to the `size` of whatever list `a` and
-`b` belong to. Constructed with no arguments — the form every example here
-uses — the node is isolated and nothing else is modified.
+This is the only constructor in the library that writes to its arguments. It
+exists to build a chain by hand in a single expression. Called with no
+arguments, as in every other example on this page, it creates an isolated node
+and modifies nothing else.
+
+The constructor links, but it does not insert. It does not look at what the
+nodes passed to it were already linked to. If `a` is followed by `b` and only
+`a` is passed, `a.next` becomes the new node, which has no `next` of its own,
+so the chain from `a` ends there, while `b.previous` still points at `a`. To
+place a node between two others, pass both.
 
 ### Does the list copy or own my objects?
 
@@ -333,47 +381,46 @@ Nothing in `src/` throws. There is no validation layer and no `TypeError` to
 catch, which keeps the operations to the pointer updates they describe and
 makes misuse silent rather than loud. These are the cases worth knowing:
 
-| Call                                                        | Result                                                                                                                                                           |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `nodeAt(i)` with `i` out of range, or `-1`                  | `undefined`                                                                                                                                                      |
-| `popNode()` / `shiftNode()` on an empty list                | `undefined`, and the list is left empty                                                                                                                          |
-| `detach()` on an already-detached node                      | no-op; both pointers are already `null`                                                                                                                          |
-| `detach(predecessor)` where it does not precede the node    | no-op; `predecessor.next` is compared to the node first, and nothing is relinked                                                                                 |
-| `detach(null)` on a node that is not the head               | the chain is cut at the node; `size` and `tail` keep the old values                                                                                              |
-| `removeNode(node)` on an empty list                         | `undefined`, and nothing is changed                                                                                                                              |
-| `removeNode(node)`, singly, with a foreign node             | `undefined`; the walk from `head` never reaches it, so nothing is changed                                                                                        |
-| `removeNode(node)`, doubly, with a foreign node             | `node` is unlinked from the list it really is in, the `size` of the list you called it on is decremented, and `node` is returned as though it had belonged there |
-| `removeNodeAfter(predecessor)` where it is the tail         | `undefined`, and nothing is changed                                                                                                                              |
-| `removeNodeAfter(predecessor)` with a foreign `predecessor` | `predecessor.next` is unlinked from the list it really is in, and the `size` of the list you called it on is decremented                                         |
-| `pushNode(node)` with a linked `node`                       | the list adopts whatever `node.next` was pointing at                                                                                                             |
+| Call                                                                                 | Result                                                                                                              |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `nodeAt(i)` with `i < 0` or `i >= size`                                              | `undefined`                                                                                                         |
+| `popNode()` or `shiftNode()` on an empty list                                        | `undefined`                                                                                                         |
+| `removeNode(node)` on an empty list                                                  | `undefined`                                                                                                         |
+| `removeNode(node)`, singly, where `node` is not in this list                         | `undefined`. The search from `head` never finds `node`, so nothing changes                                          |
+| `removeNode(node)`, doubly, where `node` is not in this list                         | `node` is unlinked from the list it is actually in, this list's `size` drops by one, and `node` is returned         |
+| `removeNodeAfter(predecessor)` where `predecessor` is the tail                       | `undefined`                                                                                                         |
+| `removeNodeAfter(predecessor)` where `predecessor` is not in this list               | the node after `predecessor` is unlinked from the list it is actually in, and this list's `size` drops by one       |
+| `pushNode(node)` where `node` is still in another list                               | `node`'s pointers are overwritten, and the list it came from still leads to it                                      |
+| `node.detach()` on a node that is already detached                                   | nothing happens                                                                                                     |
+| singly `node.detach(predecessor)` where `predecessor.next` is not `node`             | nothing happens. The call checks this before relinking                                                              |
+| singly `node.detach(null)` where `node` is not the head                              | `node` loses its `next`, so the nodes after it drop out of the chain. The list's `size` and `tail` still count them |
+| `new DoublyLinkedListNode(previous, next)` where `previous` and `next` are in a list | the new node is linked between them, and the list's `size` does not count it                                        |
 
-Most of these come from one absence, and it is a decision rather than an
-oversight: a node carries no reference to the list it is in, so no call that
-is handed a node can check that the node belongs to the list it was handed
-alongside. Adding that reference would grow every node by another pointer and
-make each one aware of a list it does not otherwise need to know about.
+Most of these have one cause, and it is deliberate: a node holds no reference
+to its list. A call handed a node therefore cannot check in constant time that
+the node belongs to the list it was called on. Giving it that reference would
+cost every node another pointer.
 
-It applies to every function that takes a node, not to removal in particular.
-`pushNode` and `unshiftNode` adopt whatever the node was already linked to.
-`removeNodeAfter(predecessor)` relinks at the position it is handed. The doubly
-linked `removeNode` unlinks a foreign node from wherever it really is. In each
-case a node from another list corrupts two at once — the one that loses a node
-without knowing, and the one whose `size` changes without gaining or losing
-anything.
+So these calls accept a node from another list without noticing, and act on
+it as though it were theirs. Adding it, with `pushNode` or `unshiftNode`,
+overwrites its pointers while the list it came from still points at it — see
+[the question on sharing a node](#can-the-same-node-be-in-two-lists-at-once).
+Removing it, with `removeNode` on a doubly linked list or `removeNodeAfter` on
+either, unlinks it from the list it is really in and decrements the `size` of
+the list you called. Both lists are then wrong: one has lost a node without
+knowing, and the other counts one node fewer than it holds.
 
-Two calls escape it, for unrelated reasons. `removeNode` on a singly linked
-list has to search from `head` for the predecessor, and the search doubles as
-a membership test, so a foreign node is reported as `undefined` and nothing is
-touched — an accident of what the call costs rather than a design. The singly
-`detach(predecessor)` escapes by design instead: it is the one call handed two
-nodes that can contradict each other, and `predecessor.next === instance`
-settles that in a single comparison, so it is checked. Neither is a general
-guarantee. Passing `null` as `predecessor` claims the node is the head, and
-that claim is not checkable at all — a singly linked node does not know what
-precedes it.
-Where an operation is `O(1)` and the question is membership, there is no such
-moment, and no return value substitutes for one: `undefined` means there was
-nothing at that position, never that the node was a stranger.
+Two calls are exceptions, for different reasons. The singly linked
+`removeNode` has to walk from `head` to find the predecessor anyway. If the
+node is not in the list, the walk ends without finding it and the call returns
+`undefined`. That is a consequence of the walk, not a check. The singly linked
+`detach(predecessor)` does check, on purpose, because one comparison settles
+it: `predecessor.next === node`. `detach(null)` cannot be checked. Passing
+`null` claims that the node is the head, and a singly linked node does not know
+what precedes it.
+
+Everywhere else, `undefined` means there was nothing at that position. It
+never means the node was a stranger.
 
 ## Environment and integration
 
@@ -394,16 +441,26 @@ as what it is and neither path prints a warning.
 
 ### Can I import only part of the library?
 
-Yes — the core functions are published as subpaths, one per module:
+Yes, at three depths. The package root exports everything. Each structure is
+also an entry point of its own — `abstract-linked-lists/singly-linked-list` and
+`abstract-linked-lists/doubly-linked-list` — exporting its `list`, `node` and
+`iterators` modules as namespaces. And each of those modules is an entry point
+too:
 
 ```typescript
-import * as list from 'abstract-linked-lists/doubly-linked-list/list';
-import * as node from 'abstract-linked-lists/doubly-linked-list/node';
+import { doublyLinkedList } from 'abstract-linked-lists';
+import * as dll from 'abstract-linked-lists/doubly-linked-list';
+import { pushNode } from 'abstract-linked-lists/doubly-linked-list/list';
+
+console.log(pushNode === dll.list.pushNode); // true
+console.log(pushNode === doublyLinkedList.list.pushNode); // true
 ```
 
-The available subpaths are `singly-linked-list` and `doubly-linked-list`, each
-of them also with `/list`, `/node` and `/iterators`. The classes are only
-available from the package root.
+All three paths reach the same function, so they can be mixed freely, and each
+resolves to the ES or CommonJS build like the root does. The classes and the
+interfaces are exported from the root only.
+[architecture-and-api.md](architecture-and-api.md#the-public-surface) lists
+every export.
 
 ### Will unused parts be dropped from my bundle?
 
@@ -421,4 +478,5 @@ Nothing. `dependencies` and `peerDependencies` are both absent from
 
 `engines` declares Node ≥ 18.12 and npm ≥ 8. The published JavaScript targets
 ES2022. TypeScript users need a version that understands the `exports` field —
-4.7 or later with `moduleResolution` set to `node16`, `nodenext` or `bundler`.
+4.7 or later with `moduleResolution` set to `node16` or `nodenext`, or 5.0 or
+later with `bundler`.
