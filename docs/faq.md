@@ -476,7 +476,4 @@ Nothing. `dependencies` and `peerDependencies` are both absent from
 
 ### What are the version requirements?
 
-`engines` declares Node ≥ 18.12 and npm ≥ 8. The published JavaScript targets
-ES2022. TypeScript users need a version that understands the `exports` field —
-4.7 or later with `moduleResolution` set to `node16` or `nodenext`, or 5.0 or
-later with `bundler`.
+Node 18.12 or later, and npm 8 or later. The published code targets ES2022.

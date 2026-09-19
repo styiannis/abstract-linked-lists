@@ -273,9 +273,9 @@ build, and a declaration tree for each of them. All four run with
 label their output by extension — `.mjs` and `.d.mts` on the ES side, `.cjs`
 and `.d.cts` on the CommonJS side.
 
-Two scripts check the result. `check-declared-paths` verifies that
-every path `package.json` declares exists in the build and carries the
-extension the condition above it implies; `check-dist-loads` loads the two
-built entries the way a consumer would, the CommonJS one with `require` and the
-ES one with `import`. Jest covers both layers, and `npm run verify` runs the
-type check, the linter, the build and both checks in sequence.
+Two scripts check the result. `check-declared-paths` verifies that every path
+`package.json` declares exists, and that each entry point carries the extension
+of the module system it is declared for; `check-dist-loads` loads the two built
+entries the way a consumer would, the CommonJS one with `require` and the ES
+one with `import`. Jest covers both layers, and `npm run verify` runs the type
+check, the linter, the build and both checks in sequence.
