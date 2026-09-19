@@ -3,7 +3,7 @@
 From an empty project to a list you can add to, walk in both directions, and
 remove from in constant time.
 
-**Last verified:** 2026-09-18 · v1.1.0 · Node ≥ 18.12
+**Last verified:** 2026-09-19 · v2.0.0 · Node ≥ 18.12
 
 ## Install
 

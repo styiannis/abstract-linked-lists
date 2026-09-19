@@ -1,6 +1,6 @@
 # abstract-linked-lists documentation
 
-**Last verified:** 2026-09-18 · v1.1.0
+**Last verified:** 2026-09-19 · v2.0.0
 
 | Document                                           | The question it answers                          |
 | -------------------------------------------------- | ------------------------------------------------ |

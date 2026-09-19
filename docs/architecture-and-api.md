@@ -1,6 +1,6 @@
 # Architecture and API
 
-**Last verified:** 2026-09-19 · v1.1.0
+**Last verified:** 2026-09-19 · v2.0.0
 
 ## One pointer as the whole base
 
