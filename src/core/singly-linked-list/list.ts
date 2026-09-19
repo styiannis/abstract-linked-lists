@@ -12,12 +12,23 @@ export function create<L extends ISinglyLinkedList>() {
 }
 
 /**
- * Clears a singly linked list by removing all nodes.
+ * Clears a singly linked list by removing and unlinking all nodes.
+ *
+ * - Time Complexity: `O(n)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  */
 export function clear<L extends ISinglyLinkedList>(instance: L) {
+  let node = instance.head;
+
+  while (node) {
+    const next = node.next;
+    node.next = null;
+    node = next;
+  }
+
   instance.size = 0;
   instance.head = null;
   instance.tail = null;
@@ -90,6 +101,9 @@ export function popNode<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Adds a node to the end of a singly linked list.
  *
+ * The node's `next` pointer is reset to `null`, so it brings no former
+ * successor with it.
+ *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
  *
@@ -101,6 +115,8 @@ export function pushNode<L extends ISinglyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.next = null;
+
   if (instance.tail) {
     instance.tail.next = node;
     instance.tail = node;
@@ -213,6 +229,9 @@ export function shiftNode<L extends ISinglyLinkedList>(instance: L) {
 /**
  * Adds a node to the beginning of a singly linked list.
  *
+ * The node's `next` pointer is replaced by the current head, so it brings no
+ * former successor with it.
+ *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
  *
@@ -224,8 +243,9 @@ export function unshiftNode<L extends ISinglyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.next = instance.head;
+
   if (instance.head) {
-    node.next = instance.head;
     instance.head = node;
   } else {
     instance.head = node;

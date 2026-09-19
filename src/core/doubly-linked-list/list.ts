@@ -12,12 +12,24 @@ export function create<L extends IDoublyLinkedList>() {
 }
 
 /**
- * Clears a doubly linked list by removing all nodes.
+ * Clears a doubly linked list by removing and unlinking all nodes.
+ *
+ * - Time Complexity: `O(n)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  */
 export function clear<L extends IDoublyLinkedList>(instance: L) {
+  let node: L['head'] = instance.head;
+
+  while (node) {
+    const next: L['head'] = node.next;
+    node.previous = null;
+    node.next = null;
+    node = next;
+  }
+
   instance.size = 0;
   instance.head = null;
   instance.tail = null;
@@ -98,6 +110,9 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
 /**
  * Adds a node to the end of a doubly linked list.
  *
+ * Any pointers `node` already carries are overwritten, so a node that was
+ * linked elsewhere brings none of its former neighbours with it.
+ *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
  *
@@ -109,8 +124,10 @@ export function pushNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.previous = instance.tail;
+  node.next = null;
+
   if (instance.tail) {
-    node.previous = instance.tail;
     instance.tail.next = node;
     instance.tail = node;
   } else {
@@ -217,6 +234,9 @@ export function shiftNode<L extends IDoublyLinkedList>(instance: L) {
 /**
  * Adds a node to the beginning of a doubly linked list.
  *
+ * Any pointers `node` already carries are overwritten, so a node that was
+ * linked elsewhere brings none of its former neighbours with it.
+ *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
  *
@@ -228,8 +248,10 @@ export function unshiftNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.previous = null;
+  node.next = instance.head;
+
   if (instance.head) {
-    node.next = instance.head;
     instance.head.previous = node;
     instance.head = node;
   } else {

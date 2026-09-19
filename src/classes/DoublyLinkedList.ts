@@ -100,7 +100,7 @@ export class DoublyLinkedList<
   }
 
   /**
-   * Resets the list to its initial empty state.
+   * Resets the list to its initial empty state, detaching every node.
    *
    * @example
    * ```typescript

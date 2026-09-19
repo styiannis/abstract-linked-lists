@@ -341,13 +341,15 @@ describe('Classes', () => {
         expect(forth.next).toBe(null);
         expect(fifth.next).toBe(null);
 
-        const newNode = new SinglyLinkedListNode();
+        // A node that still carries pointers is relinked from scratch.
+        const newNode = new SinglyLinkedListNode(singleNode);
 
         list.pushNode(newNode);
 
         expect(list.size).toBe(3);
         expect(list.tail).toBe(newNode);
         expect(forth.next).toBe(newNode);
+        expect(newNode.next).toBe(null);
 
         list.removeNode(second);
         list.removeNode(forth);
@@ -361,6 +363,20 @@ describe('Classes', () => {
         expect(newNode.next).toBe(null);
 
         expect(list.removeNode(singleNode)).toBe(undefined);
+
+        // "clear" detaches every node it removes.
+        list.pushNode(first);
+        list.pushNode(second);
+        list.clear();
+
+        expect(list.size).toBe(0);
+        expect(first.next).toBe(null);
+
+        // The same holds for "unshiftNode".
+        newNode.next = first;
+        list.unshiftNode(newNode);
+
+        expect(newNode.next).toBe(null);
       });
 
       it('Doubly linked list', () => {
@@ -404,7 +420,11 @@ describe('Classes', () => {
         expect(fifth.next).toBe(null);
         expect(fifth.previous).toBe(null);
 
-        const newNode = new DoublyLinkedListNode();
+        // A node that still carries pointers is relinked from scratch.
+        const newNode = new DoublyLinkedListNode(
+          null,
+          new DoublyLinkedListNode()
+        );
 
         list.pushNode(newNode);
 
@@ -429,6 +449,36 @@ describe('Classes', () => {
         expect(newNode.previous).toBe(null);
 
         expect(list.removeNode(singleNode)).toBe(undefined);
+
+        // "clear" detaches every node it removes.
+        list.pushNode(first);
+        list.pushNode(second);
+        list.clear();
+
+        expect(list.size).toBe(0);
+        expect(first.next).toBe(null);
+        expect(second.previous).toBe(null);
+
+        // The same holds for "unshiftNode".
+        newNode.next = first;
+        newNode.previous = first;
+        list.unshiftNode(newNode);
+
+        expect(newNode.next).toBe(null);
+        expect(newNode.previous).toBe(null);
+
+        // A stale "previous" is overwritten at both ends, empty list or not.
+        first.previous = second;
+        list.unshiftNode(first);
+
+        expect(first.previous).toBe(null);
+        expect(first.next).toBe(newNode);
+
+        list.clear();
+        second.previous = first;
+        list.pushNode(second);
+
+        expect(second.previous).toBe(null);
       });
     });
 
