@@ -91,12 +91,8 @@ export class DoublyLinkedList<
    * }
    * ```
    */
-  *[Symbol.iterator](reversed: boolean = false) {
-    for (const node of reversed
-      ? inReverseOrder(this.tail)
-      : inOrder(this.head)) {
-      yield node;
-    }
+  [Symbol.iterator](reversed: boolean = false) {
+    return reversed ? inReverseOrder(this.tail) : inOrder(this.head);
   }
 
   /**

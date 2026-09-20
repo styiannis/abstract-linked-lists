@@ -92,12 +92,8 @@ export class SinglyLinkedList<
    * }
    * ```
    */
-  *[Symbol.iterator](reversed: boolean = false) {
-    for (const node of reversed
-      ? inReverseOrder(this.head)
-      : inOrder(this.head)) {
-      yield node;
-    }
+  [Symbol.iterator](reversed: boolean = false) {
+    return reversed ? inReverseOrder(this.head) : inOrder(this.head);
   }
 
   /**

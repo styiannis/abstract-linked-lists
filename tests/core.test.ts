@@ -1,4 +1,5 @@
 import { doublyLinkedList, singlyLinkedList } from '../src';
+import { arraysEqual } from './util/arraysEqual';
 import { isValidObjectInstance } from './util/isValidObjectInstance';
 
 describe('Core', () => {
@@ -441,6 +442,80 @@ describe('Core', () => {
         for (const node of singlyLinkedList.iterators.inReverseOrder(first)) {
           expect(node).toBe(nodeArray[i--]);
         }
+      });
+    });
+
+    describe('Create an iterator, modify the list, and then iterate', () => {
+      it('Singly linked list', () => {
+        const list = singlyLinkedList.list.create();
+
+        const first = singlyLinkedList.node.create();
+        const second = singlyLinkedList.node.create();
+        const third = singlyLinkedList.node.create();
+
+        for (const node of [first, second, third]) {
+          singlyLinkedList.list.pushNode(list, node);
+        }
+
+        // The starting node is read here, not on the first step of the walk.
+        const iterator = singlyLinkedList.iterators.inOrder(list.head);
+
+        const newHead = singlyLinkedList.node.create();
+        const newTail = singlyLinkedList.node.create();
+
+        singlyLinkedList.list.unshiftNode(list, newHead);
+        singlyLinkedList.list.pushNode(list, newTail);
+
+        // The node placed before the starting one is never reached. The node
+        // placed after the end is, because each step follows the current links.
+        expect(
+          arraysEqual([...iterator], [first, second, third, newTail])
+        ).toBe(true);
+
+        // Removing the starting node detaches it, so a walk from it stops on it.
+        const fromRemoved = singlyLinkedList.iterators.inOrder(list.head);
+
+        singlyLinkedList.list.shiftNode(list);
+
+        expect(arraysEqual([...fromRemoved], [newHead])).toBe(true);
+      });
+
+      it('Doubly linked list', () => {
+        const list = doublyLinkedList.list.create();
+
+        const first = doublyLinkedList.node.create();
+        const second = doublyLinkedList.node.create();
+        const third = doublyLinkedList.node.create();
+
+        for (const node of [first, second, third]) {
+          doublyLinkedList.list.pushNode(list, node);
+        }
+
+        // "head" is read here for a forward walk, "tail" for a reverse one.
+        const forward = doublyLinkedList.iterators.inOrder(list.head);
+        const reverse = doublyLinkedList.iterators.inReverseOrder(list.tail);
+
+        const newHead = doublyLinkedList.node.create();
+        const newTail = doublyLinkedList.node.create();
+
+        doublyLinkedList.list.unshiftNode(list, newHead);
+        doublyLinkedList.list.pushNode(list, newTail);
+
+        // Each walk misses what was placed beyond the end it started from, and
+        // reaches what was placed beyond the end it is heading towards.
+        expect(arraysEqual([...forward], [first, second, third, newTail])).toBe(
+          true
+        );
+        expect(arraysEqual([...reverse], [third, second, first, newHead])).toBe(
+          true
+        );
+
+        // Removing the starting node detaches it, so a walk from it stops on it.
+        const fromRemoved = doublyLinkedList.iterators.inOrder(list.head);
+
+        doublyLinkedList.list.shiftNode(list);
+
+        expect(arraysEqual([...fromRemoved], [newHead])).toBe(true);
       });
     });
   });
