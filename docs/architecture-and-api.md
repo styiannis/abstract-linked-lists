@@ -1,6 +1,6 @@
 # Architecture and API
 
-**Last verified:** 2026-09-19 · v2.0.0
+**Last verified:** 2026-09-20 · v2.0.0
 
 ## One pointer as the whole base
 
@@ -25,28 +25,23 @@ between them are the second pointer.
 Because the node is the caller's own object, the caller never has to search
 for it. On a doubly linked list, nothing else is needed either: the node's
 `previous` and `next` are the two neighbours to relink, so removal is a few
-pointer assignments. A singly linked node knows only its `next`. The list still
-has to find the node's predecessor, by walking from `head`, which makes the same
+pointer assignments. A singly linked node knows only its `next`, so the list
+still has to walk from `head` to find the predecessor, which makes the same
 removal `O(n)` — see [Complexity](#complexity-as-implemented).
 
 What the node does not hold is a reference to its list, so `detach()` cannot
 update the list's `size`, `head` or `tail`. `removeNode` covers that from the
 other side: it is a method on the list and is handed the node, so it can update
-both. The reference is left out on purpose, because it would add another
-pointer to every node.
+both the node's links and the bookkeeping the node cannot reach. The reference
+is left out on purpose, because it would add another pointer to every node.
 
 ## Two layers
 
-`src/` divides into `core/` and `classes/`, and the division is a method
-rather than a convention.
-
-`core/` is written as small independent functions over plain objects, each
-one short enough that what happens inside it can be read off the page, **and
-so can the resources it requires**. A function that allocates says so by
-allocating in front of you. `singlyLinkedList.list.popNode` fits on one
-screen, and its `O(n)` walk is the `while` loop in the middle of it. The
-classes, the generics and the tooling sit on top of that layer, where they
-cost nothing in verifiability.
+`src/` divides into `core/` and `classes/`. The division is a method, not a
+convention: `core/` is written as small independent functions over plain
+objects, each with behaviour and cost that can be checked in the function
+itself. The classes, the generics and the tooling sit on top of that layer
+rather than inside it.
 
 ```
 src/
@@ -60,9 +55,10 @@ src/
 ```
 
 The `classes/` layer contains no algorithm. `DoublyLinkedList.popNode` is
-`return popNode(this)`; every method is that shape. What the layer adds is the
-generic parameter that carries your node subclass through the API, the
-`Symbol.iterator` implementation, and prototypes for code that prefers them.
+`return popNode(this)` and every other list operation follows the same pattern.
+What the layer adds is the generic parameter that carries your node subclass
+through the API, the `Symbol.iterator` implementation, and prototypes for code
+that prefers them.
 
 The two layers interoperate directly, because the classes satisfy the same
 interfaces the functions accept:
@@ -88,11 +84,11 @@ console.log(doublyLinkedList.list.nodeAt(list, 0)?.v); // 1
 ```
 
 Because they interoperate, which of the two a caller uses is normally a matter
-of the style the surrounding code is written in. The one case where it is not
-is inheritance. A class extends one base, so an object already extending
-something else cannot also extend `DoublyLinkedListNode` — but it can still
-carry a `next` and `previous` field, satisfy `IDoublyLinkedListNode`
-structurally, and be handed to `doublyLinkedList.list` unmodified:
+of the style the surrounding code is written in. The exception is inheritance.
+A class extends one base, so an object already extending something else cannot
+also extend `DoublyLinkedListNode` — but it can still carry a `next` and
+`previous` field, satisfy `IDoublyLinkedListNode` structurally, and be handed
+to `doublyLinkedList.list` unmodified:
 
 ```typescript
 import {
@@ -126,8 +122,11 @@ loop.
 ## The public surface
 
 The package root exports the classes, the core namespaces and the interfaces.
-Each core module is additionally published as a subpath —
-`abstract-linked-lists/doubly-linked-list/list` and its seven siblings.
+Each structure is additionally published as a subpath of its own, and each of
+its three modules under one more — eight subpaths in all:
+`abstract-linked-lists/singly-linked-list` and
+`abstract-linked-lists/doubly-linked-list`, each with `/list`, `/node` and
+`/iterators` beneath it.
 
 | Export                                                         | Kind      |
 | -------------------------------------------------------------- | --------- |
@@ -161,7 +160,7 @@ provides `inOrder` and `inReverseOrder`.
 | `inOrder`         | `O(n)` / `O(1)` space         | `O(n)` / `O(1)` space |
 | `inReverseOrder`  | `O(n)` / `O(n)` space         | `O(n)` / `O(1)` space |
 
-Three of these are worth reading twice. `popNode` on a singly linked list walks
+Four of these are worth reading twice. `popNode` on a singly linked list walks
 from the head to find the predecessor of the tail, so a stack built on one
 pushes and pops at the head, where both are `O(1)`; one that pops at the tail
 pays `O(n)` per pop. `inReverseOrder` on a singly linked list allocates an array
@@ -173,17 +172,6 @@ linked list, walks from the head to find what precedes it, while
 structures. The walk is not overhead that better code would avoid — it is the
 predecessor lookup a singly linked node cannot perform, and `O(1)` removal is
 available only to a caller who already holds the predecessor.
-
-Traversal is where a linked list loses to an array, whatever the notation
-says. Both walks are `O(n)`, but contiguous memory wins the constant: in one
-measured run, five passes over 1,000,000 nodes averaged 32.2 ms each, against
-5.6 ms for an `Array` of the same objects.
-
-Read those two figures as a ratio, not as speeds. The absolute timings depend
-on the machine and drift from run to run. What holds across runs is that
-walking the list costs several times as much as scanning the array. The memory
-figures [above](#one-pointer-as-the-whole-base) are different: they reproduce
-from run to run, so they can be read as they are.
 
 ## Extending
 
@@ -237,16 +225,19 @@ console.log(cache.removeByKey('a')?.key, cache.size); // a 1
 console.log(cache.removeByKey('a')); // undefined
 ```
 
-The `Map` answers the question the list cannot — which node carries this key —
-and `removeNode` does the rest in constant time and returns the node, so
+The `Map` answers the question the list cannot — which node carries this key.
+`removeNode` does the rest in constant time and returns the node, so
 `removeByKey` inherits the shape of the call it delegates to. Nothing here
-re-implements any part of the list. What it does not cover is every way out:
-`popNode`, `shiftNode`, `removeNodeAfter`, `clear` and a bare `removeNode` all
-bypass the two overrides above, so a node removed through one of them stays in
-the index until `removeByKey` looks it up, hands back a node that has already
-left the list, and decrements `size` a second time. A subclass that must stay
-correct under every mutator overrides all of them; this one shows the
-delegation, not the whole maintenance burden.
+re-implements any part of the list.
+
+What `IndexedList` does not cover is every way out. `popNode`, `shiftNode`,
+`removeNodeAfter`, `clear` and a bare `removeNode` all bypass the two overrides
+above, so a node removed through one of them stays in the index. A later
+`removeByKey` finds and returns it, even though it has already left the list.
+Unless the list has emptied in the meantime, that call also decrements `size` a
+second time. A subclass that must stay correct under every mutator overrides
+all of them. This example shows the delegation, not the whole maintenance
+burden.
 
 **Implement an abstract class** when the storage or the invariants are your
 own — a list that maintains sorted order on insertion, or one whose nodes are
@@ -254,11 +245,11 @@ not objects of yours at all. `AbstractLinkedList<N>` requires
 `[Symbol.iterator]`, `clear`, `nodeAt`, `pushNode`, `unshiftNode`, `popNode`,
 `shiftNode`, `removeNode(node)` and `removeNodeAfter(predecessor)`, the last two
 returning `N | undefined`. `AbstractSinglyLinkedList` and
-`AbstractDoublyLinkedList` add nothing but the node-type constraint: every list
-member is common to both structures, and where the two differ it is in what an
-operation costs, not in what it is called or what it is passed. Note that the
-abstract signature declares `[Symbol.iterator](reversed: boolean)`, so an
-implementation accepts the argument even though `for...of` never passes it.
+`AbstractDoublyLinkedList` add nothing but the node-type constraint. Every list
+member is common to both structures. The two differ in what an operation costs,
+not in what it is called or what it is passed. The abstract signature declares
+`[Symbol.iterator](reversed: boolean)`, so an implementation accepts the
+argument even though `for...of` never passes it.
 
 The interfaces are the third route and the lightest: a type that satisfies
 `IDoublyLinkedList<N>` can be passed to every function in the
@@ -274,8 +265,8 @@ label their output by extension — `.mjs` and `.d.mts` on the ES side, `.cjs`
 and `.d.cts` on the CommonJS side.
 
 Two scripts check the result. `check-declared-paths` verifies that every path
-`package.json` declares exists, and that each entry point carries the extension
-of the module system it is declared for; `check-dist-loads` loads the two built
-entries the way a consumer would, the CommonJS one with `require` and the ES
-one with `import`. Jest covers both layers, and `npm run verify` runs the type
-check, the linter, the build and both checks in sequence.
+declared in `package.json` exists, and that each entry point carries the
+extension of the module system it is declared for. `check-dist-loads` loads the
+two built entries the way a consumer would, the CommonJS one with `require` and
+the ES one with `import`. Jest covers both layers, and `npm run verify` runs the
+type check, the linter, the build and both checks in sequence.

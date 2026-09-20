@@ -3,7 +3,7 @@
 From an empty project to a list you can add to, walk in both directions, and
 remove from in constant time.
 
-**Last verified:** 2026-09-19 · v2.0.0 · Node ≥ 18.12
+**Last verified:** 2026-09-20 · v2.0.0 · Node ≥ 18.12
 
 ## Install
 
@@ -98,7 +98,7 @@ reaching index `k` costs `O(min(k, n - k))`. An index outside the list returns
 
 A node in a doubly linked list carries both of its neighbours, so holding the
 node is holding its position. You kept a reference to `first` when you queued
-it, so cancelling that job does not require finding it first.
+it, so cancelling that job does not require searching for it.
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -130,12 +130,12 @@ console.log(first.previous, first.next); // null null
 ```
 
 On a doubly linked list `removeNode` is constant time wherever the node sits —
-`first` above was already in the middle of the queue, not an end. It reassigns
-`head` or `tail` if the node was an end, unlinks it from its neighbours,
-decrements `size`, and hands the node back. It returns `undefined` only when
-the list was already empty. Since you are holding the node, that is the only
-case where the return value tells you anything. The node comes back isolated,
-so it can be pushed straight into another list.
+`first` above was already in the middle of the queue, not an end. The call
+reassigns `head` or `tail` if the node was an end, unlinks it from its
+neighbours, decrements `size`, and hands the node back. It returns `undefined`
+only when the list was already empty. Since you are holding the node, that is
+the only case where the return value tells you anything. The node comes back
+isolated, so it can be pushed straight into another list.
 
 On a `SinglyLinkedList` the same call is `O(n)`: a node with no `previous`
 pointer does not locate itself, so the list walks from `head` to find the

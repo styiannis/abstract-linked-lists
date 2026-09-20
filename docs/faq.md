@@ -3,7 +3,7 @@
 Behaviour that surprises readers of the API, what the library does instead of
 throwing, and the questions the package shape raises.
 
-**Last verified:** 2026-09-19 · v2.0.0
+**Last verified:** 2026-09-20 · v2.0.0
 
 ## Behaviour
 
@@ -357,10 +357,9 @@ const middle = new DoublyLinkedListNode(a, b);
 console.log(a.next === middle, b.previous === middle); // true true
 ```
 
-This is the only constructor in the library that writes to its arguments. It
-exists to build a chain by hand in a single expression. Called with no
-arguments, as in every other example on this page, it creates an isolated node
-and modifies nothing else.
+The two-argument form exists to build a chain by hand in a single expression.
+Called with no arguments, as in every other example on this page, the
+constructor creates an isolated node and modifies nothing else.
 
 The constructor links, but it does not insert. It does not look at what the
 nodes passed to it were already linked to. If `a` is followed by `b` and only
@@ -391,7 +390,7 @@ makes misuse silent rather than loud. These are the cases worth knowing:
 | `removeNodeAfter(predecessor)` where `predecessor` is the tail                       | `undefined`                                                                                                         |
 | `removeNodeAfter(predecessor)` where `predecessor` is not in this list               | the node after `predecessor` is unlinked from the list it is actually in, and this list's `size` drops by one       |
 | `pushNode(node)` where `node` is still in another list                               | `node`'s pointers are overwritten, and the list it came from still leads to it                                      |
-| `node.detach()` on a node that is already detached                                   | nothing happens                                                                                                     |
+| `node.detach(...)` on a node that is already detached                                | nothing happens                                                                                                     |
 | singly `node.detach(predecessor)` where `predecessor.next` is not `node`             | nothing happens. The call checks this before relinking                                                              |
 | singly `node.detach(null)` where `node` is not the head                              | `node` loses its `next`, so the nodes after it drop out of the chain. The list's `size` and `tail` still count them |
 | `new DoublyLinkedListNode(previous, next)` where `previous` and `next` are in a list | the new node is linked between them, and the list's `size` does not count it                                        |

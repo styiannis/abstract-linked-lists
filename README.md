@@ -4,9 +4,12 @@
 [![Coverage Status](https://img.shields.io/coverallsCoverage/github/styiannis/abstract-linked-lists)](https://coveralls.io/github/styiannis/abstract-linked-lists?branch=main)
 
 Singly and doubly linked lists for TypeScript in which **your object is the
-node**. The list stores no values of its own, so an element you already hold
-is removed from where it sits. On a doubly linked list, that takes constant
-time and no search.
+node**. The pointers live on the object, so a reference you already hold is a
+position in the list. Removing that element costs constant time on a doubly
+linked list, with no search and no per-element wrapper to allocate.
+
+Each structure is available as a class and as the plain functions the class
+delegates to.
 
 ## Install
 
@@ -58,10 +61,9 @@ The generic parameter carries the subclass through, so `head`, `tail`,
 
 ## Removal without a search
 
-Because the caller owns the node, an element can be unlinked from a position
-it already holds. `removeNode` takes the node itself, relinks its neighbours,
-reassigns `head` or `tail` if it was an end, decrements `size`, and returns
-the node it removed:
+`removeNode` takes the node itself, relinks its neighbours, reassigns `head`
+or `tail` if it was an end, decrements `size`, and returns the node it
+removed:
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -86,8 +88,8 @@ console.log(queue.size); // 2
 console.log([...queue].map((t) => t.name)); // [ 'auth', 'parse' ]
 ```
 
-Constant time wherever the node sits, and the node comes back isolated. An
-empty list returns `undefined`.
+The node comes back isolated, its own `previous` and `next` reset to `null`. A
+call on an empty list returns `undefined`.
 
 On a singly linked list the same call finds the node's predecessor by walking
 from `head`, so its cost grows with the length of the list — a node carrying
@@ -117,11 +119,11 @@ console.log([...stack].map((t) => t.name)); // [ 'auth', 'parse' ]
 ```
 
 An `Array` has no removal by reference. Removing a given object from one means
-finding it with `indexOf` and closing the gap with `splice`, and both cost time
-in proportion to the array's length. On a doubly linked list, removal costs the
-same at any length.
+finding it with `indexOf` and closing the gap with `splice`. Having the index
+in advance removes only the first of those costs. The shift is still
+proportional to what follows the gap.
 
-## Two APIs over the same structures
+## Two layers over the same structures
 
 The classes above delegate to a layer of plain functions that operate on plain
 objects. That layer is exported as well, for code that would rather not
@@ -210,7 +212,7 @@ stack, so it takes `O(n)` space. On a doubly linked list it follows the
 Nothing in the library throws. An index out of range, or a removal from an
 empty list, returns `undefined`. Most calls also do not check that a node they
 are given belongs to the list: a node from another list is acted on as though
-it did, and both lists can be left inconsistent.
+it belonged, and both lists can be left inconsistent.
 [The FAQ](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/faq.md#what-happens-instead-of-an-error)
 lists every such case.
 
@@ -220,14 +222,14 @@ A linked list pays for its constant-time edits with a pointer in every node
 and a walk for every traversal. What follows are the cases where nothing is
 bought with them.
 
-| If this describes the problem                     | Reach for                                                                                                                                                                                                                                    |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mostly traversal or indexing                      | an `Array` — both visit every element, but scanning contiguous memory is [several times faster](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/architecture-and-api.md#complexity-as-implemented) than following pointers |
-| Elements are appended and iterated, never removed | an `Array` — the list's advantage is removal from a held reference, and nothing here would use it                                                                                                                                            |
-| Elements are looked up by key                     | a `Map`, alone or kept beside the list — `pushNode` indexes nothing, and there is no `find`                                                                                                                                                  |
-| A container that owns its values                  | a wrapper written on top — `pushNode` takes a node, not a value, and there is no `push(value)`, `indexOf` or `filter`                                                                                                                        |
-| Removal from the tail of a singly linked list     | `DoublyLinkedList` — the singly linked `popNode` walks the whole list to reach the tail's predecessor, while the doubly linked one pops in constant time for one more pointer per node                                                       |
-| One object in two lists at once                   | a separate node per list — a node has one set of pointers, and pushing it into a second list overwrites them                                                                                                                                 |
+| If this describes the problem                     | Reach for                                                                                                                                                                              |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mostly traversal or indexing                      | an `Array` — both visit every element, but only the array can reach one without passing the rest                                                                                       |
+| Elements are appended and iterated, never removed | an `Array` — the list's advantage is removal from a held reference, and nothing here would use it                                                                                      |
+| Elements are looked up by key                     | a `Map`, alone or kept beside the list — `pushNode` indexes nothing, and there is no `find`                                                                                            |
+| A container that owns its values                  | a wrapper written on top — `pushNode` takes a node, not a value, and there is no `push(value)`, `indexOf` or `filter`                                                                  |
+| Removal from the tail of a singly linked list     | `DoublyLinkedList` — the singly linked `popNode` walks the whole list to reach the tail's predecessor, while the doubly linked one pops in constant time for one more pointer per node |
+| One object in two lists at once                   | a separate node per list — a node has one set of pointers, and pushing it into a second list overwrites them                                                                           |
 
 ## Documentation
 

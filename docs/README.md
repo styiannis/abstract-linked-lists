@@ -1,14 +1,10 @@
-# abstract-linked-lists documentation
+# Abstract Linked Lists - Documentation
 
-**Last verified:** 2026-09-19 · v2.0.0
+| Document                                        | The question it answers                          |
+| ----------------------------------------------- | ------------------------------------------------ |
+| [Getting started](getting-started.md)           | How do I install it and get a working list?      |
+| [FAQ](faq.md)                                   | It did something I did not expect — why?         |
+| [Architecture and API](architecture-and-api.md) | How is the library built, and what can I extend? |
 
-| Document                                           | The question it answers                          |
-| -------------------------------------------------- | ------------------------------------------------ |
-| [getting-started.md](getting-started.md)           | How do I install it and get a working list?      |
-| [faq.md](faq.md)                                   | It did something I did not expect — why?         |
-| [architecture-and-api.md](architecture-and-api.md) | How is the library built, and what can I extend? |
-
-The generated API reference — every signature, every type — is at
-[styiannis.github.io/abstract-linked-lists](https://styiannis.github.io/abstract-linked-lists/).
-The [README](../README.md) is the summary; nothing here is required reading to
-understand it.
+The generated [API reference](https://styiannis.github.io/abstract-linked-lists/)
+lists every signature and every type.
