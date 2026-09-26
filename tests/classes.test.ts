@@ -481,6 +481,32 @@ describe('Classes', () => {
 
         expect(second.previous).toBe(null);
       });
+
+      it('"clear" detaches every node, for odd and even lengths', () => {
+        for (const length of [1, 2, 3, 4, 5]) {
+          const list = new DoublyLinkedList();
+
+          const nodes = Array.from(
+            { length },
+            () => new DoublyLinkedListNode()
+          );
+
+          for (const node of nodes) {
+            list.pushNode(node);
+          }
+
+          list.clear();
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBe(null);
+          expect(list.tail).toBe(null);
+
+          for (const node of nodes) {
+            expect(node.next).toBe(null);
+            expect(node.previous).toBe(null);
+          }
+        }
+      });
     });
 
     describe('Remove the node after a given node using the "removeNodeAfter" method', () => {

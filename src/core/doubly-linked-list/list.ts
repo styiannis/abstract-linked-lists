@@ -14,6 +14,8 @@ export function create<L extends IDoublyLinkedList>() {
 /**
  * Clears a doubly linked list by removing and unlinking all nodes.
  *
+ * Unlinks nodes from `head` and `tail` at once, halving the loop's iterations.
+ *
  * - Time Complexity: `O(n)`
  * - Space Complexity: `O(1)`
  *
@@ -21,13 +23,29 @@ export function create<L extends IDoublyLinkedList>() {
  * @param instance - The list instance.
  */
 export function clear<L extends IDoublyLinkedList>(instance: L) {
-  let node: L['head'] = instance.head;
+  let left = instance.head;
+  let right = instance.tail;
 
-  while (node) {
-    const next: L['head'] = node.next;
-    node.previous = null;
-    node.next = null;
-    node = next;
+  while (left && right) {
+    const nextLeft = left.next;
+    const prevRight = right.previous;
+
+    left.previous = null;
+    left.next = null;
+
+    if (left === right) {
+      break;
+    }
+
+    right.previous = null;
+    right.next = null;
+
+    if (left === prevRight) {
+      break;
+    }
+
+    left = nextLeft;
+    right = prevRight;
   }
 
   instance.size = 0;

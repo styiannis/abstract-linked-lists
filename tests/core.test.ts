@@ -314,6 +314,31 @@ describe('Core', () => {
 
         expect(second.previous).toBe(null);
       });
+
+      it('"clear" detaches every node, for odd and even lengths', () => {
+        for (const length of [1, 2, 3, 4, 5]) {
+          const list = doublyLinkedList.list.create();
+
+          const nodes = Array.from({ length }, () =>
+            doublyLinkedList.node.create()
+          );
+
+          for (const node of nodes) {
+            doublyLinkedList.list.pushNode(list, node);
+          }
+
+          doublyLinkedList.list.clear(list);
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBe(null);
+          expect(list.tail).toBe(null);
+
+          for (const node of nodes) {
+            expect(node.next).toBe(null);
+            expect(node.previous).toBe(null);
+          }
+        }
+      });
     });
 
     describe('Remove the node after a given node using the "removeNodeAfter" function', () => {

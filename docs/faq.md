@@ -101,9 +101,10 @@ unlinks, which is the reason to prefer it to a bare `detach()`.
 
 ### What does `clear()` do to my nodes?
 
-It detaches every one of them. Walking from `head`, it sets each node's `next`,
-and on a doubly linked list its `previous`, to `null`. Then it resets the list:
-`size` to `0`, `head` and `tail` to `null`.
+It detaches every one of them, setting each node's `next` (and, on a doubly
+linked list, its `previous`) to `null`. A singly linked list walks from
+`head`; a doubly linked one walks inward from `head` and `tail` at once. Then
+it resets the list: `size` to `0`, `head` and `tail` to `null`.
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
