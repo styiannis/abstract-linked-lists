@@ -4,6 +4,8 @@ import {
   nodeAt,
   popNode,
   pushNode,
+  removeNode,
+  removeNodeAfter,
   shiftNode,
   unshiftNode,
 } from '../core/doubly-linked-list/list';
@@ -45,8 +47,8 @@ import { DoublyLinkedListNode } from './DoublyLinkedListNode';
  * ```
  */
 export class DoublyLinkedList<
-    N extends DoublyLinkedListNode = DoublyLinkedListNode
-  >
+  N extends DoublyLinkedListNode = DoublyLinkedListNode,
+>
   extends AbstractDoublyLinkedList<N>
   implements IDoublyLinkedList<N>
 {
@@ -89,16 +91,12 @@ export class DoublyLinkedList<
    * }
    * ```
    */
-  *[Symbol.iterator](reversed: boolean = false) {
-    for (const node of reversed
-      ? inReverseOrder(this.tail)
-      : inOrder(this.head)) {
-      yield node;
-    }
+  [Symbol.iterator](reversed: boolean = false) {
+    return reversed ? inReverseOrder(this.tail) : inOrder(this.head);
   }
 
   /**
-   * Resets the list to its initial empty state.
+   * Resets the list to its initial empty state, detaching every node.
    *
    * @example
    * ```typescript
@@ -223,5 +221,64 @@ export class DoublyLinkedList<
    */
   shiftNode() {
     return shiftNode(this);
+  }
+
+  /**
+   * Removes and returns a specific node from the list.
+   *
+   * @param node - The node to remove.
+   * @returns The removed node, or `undefined` if the list was empty.
+   * @example
+   * ```typescript
+   * const list = new DoublyLinkedList();
+   *
+   * const node1 = new DoublyLinkedListNode();
+   * const node2 = new DoublyLinkedListNode();
+   * const node3 = new DoublyLinkedListNode();
+   *
+   * list.pushNode(node1);
+   * list.pushNode(node2);
+   * list.pushNode(node3);
+   *
+   * list.removeNode(node2);
+   *
+   * console.log(list.size); // 2
+   * console.log(node1.next === node3); // true
+   * console.log(node3.previous === node1); // true
+   * ```
+   */
+  removeNode(node: N) {
+    return removeNode(this, node);
+  }
+
+  /**
+   * Removes and returns the node that follows a given node in the list.
+   *
+   * Equivalent to `removeNode`, but positioned relative to `predecessor`
+   * instead of the node itself.
+   *
+   * @param predecessor - The node preceding the node to remove.
+   * @returns The removed node, or `undefined` if `predecessor` has no next node.
+   * @example
+   * ```typescript
+   * const list = new DoublyLinkedList();
+   *
+   * const node1 = new DoublyLinkedListNode();
+   * const node2 = new DoublyLinkedListNode();
+   * const node3 = new DoublyLinkedListNode();
+   *
+   * list.pushNode(node1);
+   * list.pushNode(node2);
+   * list.pushNode(node3);
+   *
+   * console.log(list.removeNodeAfter(node1) === node2); // true
+   *
+   * console.log(list.size); // 2
+   * console.log(node1.next === node3); // true
+   * console.log(node3.previous === node1); // true
+   * ```
+   */
+  removeNodeAfter(predecessor: N) {
+    return removeNodeAfter(this, predecessor);
   }
 }

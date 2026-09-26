@@ -25,6 +25,8 @@ function isValidListClassInstance(
     'nodeAt',
     'popNode',
     'pushNode',
+    'removeNode',
+    'removeNodeAfter',
     'shiftNode',
     'unshiftNode',
   ];
