@@ -3,12 +3,13 @@
   "version": "2.0.0",
   "description": "Singly and doubly linked lists for TypeScript, reduced to a node that holds nothing but its pointers, for your own objects to extend.",
   "keywords": [
+    "linked-list",
+    "doubly-linked-list",
+    "singly-linked-list",
     "intrusive",
-    "linked list",
-    "doubly linked list",
-    "singly linked list",
-    "intrusive linked list",
-    "data structures",
+    "intrusive-linked-list",
+    "data-structure",
+    "data-structures",
     "typescript"
   ],
   "author": "Yiannis Stergiou <hello@styiannis.dev>",
