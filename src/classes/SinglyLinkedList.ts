@@ -46,8 +46,8 @@ import { SinglyLinkedListNode } from './SinglyLinkedListNode';
  * ```
  */
 export class SinglyLinkedList<
-    N extends SinglyLinkedListNode = SinglyLinkedListNode
-  >
+  N extends SinglyLinkedListNode = SinglyLinkedListNode,
+>
   extends AbstractSinglyLinkedList<N>
   implements ISinglyLinkedList<N>
 {
@@ -90,16 +90,12 @@ export class SinglyLinkedList<
    * }
    * ```
    */
-  *[Symbol.iterator](reversed: boolean = false) {
-    for (const node of reversed
-      ? inReverseOrder(this.head)
-      : inOrder(this.head)) {
-      yield node;
-    }
+  [Symbol.iterator](reversed: boolean = false) {
+    return reversed ? inReverseOrder(this.head) : inOrder(this.head);
   }
 
   /**
-   * Resets the list to its initial empty state.
+   * Resets the list to its initial empty state. The nodes keep their pointers.
    *
    * @example
    * ```typescript

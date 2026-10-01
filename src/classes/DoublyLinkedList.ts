@@ -45,8 +45,8 @@ import { DoublyLinkedListNode } from './DoublyLinkedListNode';
  * ```
  */
 export class DoublyLinkedList<
-    N extends DoublyLinkedListNode = DoublyLinkedListNode
-  >
+  N extends DoublyLinkedListNode = DoublyLinkedListNode,
+>
   extends AbstractDoublyLinkedList<N>
   implements IDoublyLinkedList<N>
 {
@@ -89,16 +89,12 @@ export class DoublyLinkedList<
    * }
    * ```
    */
-  *[Symbol.iterator](reversed: boolean = false) {
-    for (const node of reversed
-      ? inReverseOrder(this.tail)
-      : inOrder(this.head)) {
-      yield node;
-    }
+  [Symbol.iterator](reversed: boolean = false) {
+    return reversed ? inReverseOrder(this.tail) : inOrder(this.head);
   }
 
   /**
-   * Resets the list to its initial empty state.
+   * Resets the list to its initial empty state. The nodes keep their pointers.
    *
    * @example
    * ```typescript

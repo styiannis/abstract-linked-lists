@@ -13,6 +13,8 @@ export function create<L extends IDoublyLinkedList>() {
 /**
  * Clears a doubly linked list by removing all nodes.
  *
+ * The nodes keep their pointers.
+ *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  */
@@ -89,13 +91,16 @@ export function popNode<L extends IDoublyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return last;
 }
 
 /**
  * Adds a node to the end of a doubly linked list.
+ *
+ * Any pointers `node` already carries are overwritten, so a node that was
+ * linked elsewhere brings none of its former neighbours with it.
  *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
@@ -108,8 +113,10 @@ export function pushNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.previous = instance.tail;
+  node.next = null;
+
   if (instance.tail) {
-    node.previous = instance.tail;
     instance.tail.next = node;
     instance.tail = node;
   } else {
@@ -117,7 +124,7 @@ export function pushNode<L extends IDoublyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
 }
 
 /**
@@ -147,13 +154,16 @@ export function shiftNode<L extends IDoublyLinkedList>(instance: L) {
     instance.tail = null;
   }
 
-  instance.size--;
+  instance.size -= 1;
 
   return first;
 }
 
 /**
  * Adds a node to the beginning of a doubly linked list.
+ *
+ * Any pointers `node` already carries are overwritten, so a node that was
+ * linked elsewhere brings none of its former neighbours with it.
  *
  * - Time Complexity: `O(1)`
  * - Space Complexity: `O(1)`
@@ -166,8 +176,10 @@ export function unshiftNode<L extends IDoublyLinkedList>(
   instance: L,
   node: NonNullable<L['head']>
 ) {
+  node.previous = null;
+  node.next = instance.head;
+
   if (instance.head) {
-    node.next = instance.head;
     instance.head.previous = node;
     instance.head = node;
   } else {
@@ -175,5 +187,5 @@ export function unshiftNode<L extends IDoublyLinkedList>(
     instance.tail = node;
   }
 
-  instance.size++;
+  instance.size += 1;
 }
