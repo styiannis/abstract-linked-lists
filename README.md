@@ -4,9 +4,8 @@
 [![Coverage Status](https://img.shields.io/coverallsCoverage/github/styiannis/abstract-linked-lists)](https://coveralls.io/github/styiannis/abstract-linked-lists?branch=main)
 
 Singly and doubly linked lists for TypeScript in which **your object is the
-node**. The pointers live on the object, so a reference you already hold is a
-position in the list. Removing that element costs constant time on a doubly
-linked list, with no search and no per-element wrapper to allocate.
+node**. The pointers live on the object itself, so a list holds your objects
+directly, with no per-element wrapper to allocate.
 
 Each structure is available as a class and as the plain functions the class
 delegates to.
@@ -37,9 +36,7 @@ class TaskNode extends DoublyLinkedListNode {
 
 const queue = new DoublyLinkedList<TaskNode>();
 
-const fetchTask = new TaskNode('fetch');
-
-queue.pushNode(fetchTask);
+queue.pushNode(new TaskNode('fetch'));
 queue.pushNode(new TaskNode('parse'));
 
 queue.unshiftNode(new TaskNode('auth'));
@@ -58,70 +55,6 @@ for (const node of queue[Symbol.iterator](true)) {
 
 The generic parameter carries the subclass through, so `head`, `tail`,
 `nodeAt` and the iterators all return `TaskNode`.
-
-## Removal without a search
-
-`removeNode` takes the node itself, relinks its neighbours, reassigns `head`
-or `tail` if it was an end, decrements `size`, and returns the node it
-removed:
-
-```typescript
-import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
-
-class TaskNode extends DoublyLinkedListNode {
-  constructor(public readonly name: string) {
-    super();
-  }
-}
-
-const queue = new DoublyLinkedList<TaskNode>();
-
-const fetchTask = new TaskNode('fetch');
-
-queue.pushNode(fetchTask);
-queue.pushNode(new TaskNode('parse'));
-
-queue.unshiftNode(new TaskNode('auth'));
-
-console.log(queue.removeNode(fetchTask)?.name); // fetch
-console.log(queue.size); // 2
-console.log([...queue].map((t) => t.name)); // [ 'auth', 'parse' ]
-```
-
-The node comes back isolated, its own `previous` and `next` reset to `null`. A
-call on an empty list returns `undefined`.
-
-On a singly linked list the same call finds the node's predecessor by walking
-from `head`, so its cost grows with the length of the list — a node carrying
-one pointer cannot look backwards. Where that predecessor is already in hand,
-`removeNodeAfter(predecessor)` removes what follows it in constant time on
-either structure:
-
-```typescript
-import { SinglyLinkedList, SinglyLinkedListNode } from 'abstract-linked-lists';
-
-class TaskNode extends SinglyLinkedListNode {
-  constructor(public readonly name: string) {
-    super();
-  }
-}
-
-const stack = new SinglyLinkedList<TaskNode>();
-
-const authTask = new TaskNode('auth');
-
-stack.pushNode(authTask);
-stack.pushNode(new TaskNode('fetch'));
-stack.pushNode(new TaskNode('parse'));
-
-console.log(stack.removeNodeAfter(authTask)?.name); // fetch
-console.log([...stack].map((t) => t.name)); // [ 'auth', 'parse' ]
-```
-
-An `Array` has no removal by reference. Removing a given object from one means
-finding it with `indexOf` and closing the gap with `splice`. Having the index
-in advance removes only the first of those costs. The shift is still
-proportional to what follows the gap.
 
 ## Two layers over the same structures
 
@@ -196,12 +129,10 @@ three and the two abstract node classes, `AbstractSinglyLinkedListNode` and
 | `size` `head` `tail`           | ✓                                       | ✓               |
 | `pushNode(node)`               | `O(1)`                                  | `O(1)`          |
 | `unshiftNode(node)`            | `O(1)`                                  | `O(1)`          |
-| `removeNode(node)`             | `O(n)`, walks from `head`               | `O(1)`          |
-| `removeNodeAfter(predecessor)` | `O(1)`                                  | `O(1)`          |
 | `shiftNode()`                  | `O(1)`                                  | `O(1)`          |
 | `popNode()`                    | `O(n)`                                  | `O(1)`          |
 | `nodeAt(k)`                    | `O(k)`                                  | `O(min(k,n-k))` |
-| `clear()`                      | `O(n)`                                  | `O(n)`          |
+| `clear()`                      | `O(1)`                                  | `O(1)`          |
 | `[Symbol.iterator](reversed?)` | `O(n)`                                  | `O(n)`          |
 | `node.detach(...)`             | `O(1)`, caller supplies the predecessor | `O(1)`          |
 
@@ -209,10 +140,18 @@ Reverse iteration on a singly linked list first copies every node onto a
 stack, so it takes `O(n)` space. On a doubly linked list it follows the
 `previous` pointers in constant space.
 
+`clear()` resets `size`, `head` and `tail` and leaves the nodes' own pointers
+as they were. `pushNode` and `unshiftNode` overwrite those pointers, so a
+cleared node can be added again.
+
+`node.detach(...)` relinks the node's neighbours and resets the node's own
+pointers. It does not touch the list: `size`, `head` and `tail` keep their
+values, even when the node was the list's `head` or `tail`.
+
 Nothing in the library throws. An index out of range, or a removal from an
-empty list, returns `undefined`. Most calls also do not check that a node they
-are given belongs to the list: a node from another list is acted on as though
-it belonged, and both lists can be left inconsistent.
+empty list, returns `undefined`. No call that takes a node checks that it
+belongs to the list: a node from another list is acted on as though it
+belonged, and both lists can be left inconsistent.
 
 ## When not to use it
 
@@ -222,8 +161,8 @@ bought with them.
 
 | If this describes the problem                     | Reach for                                                                                                                                                                              |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mostly traversal or indexing                      | an `Array` — both visit every element, but only the array can reach one without passing the rest                                                                                       |
-| Elements are appended and iterated, never removed | an `Array` — the list's advantage is removal from a held reference, and nothing here would use it                                                                                      |
+| Mostly traversal or indexing                      | an `Array` — a traversal visits every element of either, but only the array can reach one without passing the rest                                                                     |
+| Elements are appended and iterated, never removed | an `Array` — it does both without a pointer on every element                                                                                                                           |
 | Elements are looked up by key                     | a `Map`, alone or kept beside the list — `pushNode` indexes nothing, and there is no `find`                                                                                            |
 | A container that owns its values                  | a wrapper written on top — `pushNode` takes a node, not a value, and there is no `push(value)`, `indexOf` or `filter`                                                                  |
 | Removal from the tail of a singly linked list     | `DoublyLinkedList` — the singly linked `popNode` walks the whole list to reach the tail's predecessor, while the doubly linked one pops in constant time for one more pointer per node |

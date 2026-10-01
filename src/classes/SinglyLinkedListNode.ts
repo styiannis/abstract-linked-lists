@@ -43,12 +43,10 @@ export class SinglyLinkedListNode
   }
 
   /**
-   * Detaches the node by updating the `next` reference of its predecessor.
+   * Detaches the node by updating the `next` reference of the previous node.
+   * After detachment, the node's `next` pointer is set to `null`.
    *
-   * After detachment, the node's `next` pointer is set to `null`. If
-   * `predecessor` does not precede the node, nothing is changed.
-   *
-   * @param predecessor - The preceding node, or `null` if the node has no predecessor.
+   * @param previous - The previous node, or `null` if the node has no previous connection.
    * @example
    * ```typescript
    * // Create a chain of nodes
@@ -66,7 +64,7 @@ export class SinglyLinkedListNode
    * // node2.next === null
    * ```
    */
-  detach(predecessor: SinglyLinkedListNode | null) {
-    return detach(this, predecessor);
+  detach(previous: SinglyLinkedListNode | null) {
+    return detach(this, previous);
   }
 }

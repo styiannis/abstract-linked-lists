@@ -1,5 +1,4 @@
 import { ISinglyLinkedList } from '../../types';
-import { detach } from './node';
 
 /**
  * Creates a new singly linked list instance.
@@ -12,23 +11,14 @@ export function create<L extends ISinglyLinkedList>() {
 }
 
 /**
- * Clears a singly linked list by removing and unlinking all nodes.
+ * Clears a singly linked list by removing all nodes.
  *
- * - Time Complexity: `O(n)`
- * - Space Complexity: `O(1)`
+ * The nodes keep their pointers.
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  */
 export function clear<L extends ISinglyLinkedList>(instance: L) {
-  let node = instance.head;
-
-  while (node) {
-    const next = node.next;
-    node.next = null;
-    node = next;
-  }
-
   instance.size = 0;
   instance.head = null;
   instance.tail = null;
@@ -126,74 +116,6 @@ export function pushNode<L extends ISinglyLinkedList>(
   }
 
   instance.size += 1;
-}
-
-/**
- * Removes and returns a specific node from a singly linked list.
- *
- * Use `removeNodeAfter` instead when the preceding node is already known and
- * the `O(n)` traversal is not acceptable.
- *
- * - Time Complexity: `O(n)`
- * - Space Complexity: `O(1)`
- *
- * @typeParam L - The type of the list.
- * @param instance - The list instance.
- * @param node - The node to remove, located by traversing from `head`.
- * @returns The removed node, or `undefined` if `node` is not part of the list.
- */
-export function removeNode<L extends ISinglyLinkedList>(
-  instance: L,
-  node: NonNullable<L['head']>
-) {
-  let previous: L['head'] = null;
-  let current: L['head'] = instance.head;
-
-  while (current && current !== node) {
-    previous = current;
-    current = current.next;
-  }
-
-  if (!current) {
-    return;
-  }
-
-  return previous ? removeNodeAfter(instance, previous) : shiftNode(instance);
-}
-
-/**
- * Removes and returns the node that follows a given node in a singly linked list.
- *
- * Constant-time counterpart to `removeNode`: the caller supplies the
- * predecessor, so the list does not have to be traversed to find it.
- *
- * - Time Complexity: `O(1)`
- * - Space Complexity: `O(1)`
- *
- * @typeParam L - The type of the list.
- * @param instance - The list instance.
- * @param predecessor - The node preceding the node to remove.
- * @returns The removed node, or `undefined` if `predecessor` has no next node.
- */
-export function removeNodeAfter<L extends ISinglyLinkedList>(
-  instance: L,
-  predecessor: NonNullable<L['head']>
-) {
-  const node: L['head'] = predecessor.next;
-
-  if (!node) {
-    return;
-  }
-
-  if (node === instance.tail) {
-    instance.tail = predecessor;
-  }
-
-  detach(node, predecessor);
-
-  instance.size -= 1;
-
-  return node;
 }
 
 /**

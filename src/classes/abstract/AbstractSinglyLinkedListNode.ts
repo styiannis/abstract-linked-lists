@@ -13,9 +13,9 @@
  */
 export abstract class AbstractSinglyLinkedListNode {
   /**
-   * Detaches the node by updating the `next` reference of its predecessor.
+   * Detaches the node by updating the `next` reference of the previous node.
    *
-   * @param predecessor - The preceding node, or `null` if the node has no predecessor.
+   * @param previous - The previous node, or `null` if the node has no previous connection.
    */
-  abstract detach(predecessor: AbstractSinglyLinkedListNode | null): void;
+  abstract detach(previous: AbstractSinglyLinkedListNode | null): void;
 }
