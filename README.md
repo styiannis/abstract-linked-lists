@@ -213,8 +213,6 @@ Nothing in the library throws. An index out of range, or a removal from an
 empty list, returns `undefined`. Most calls also do not check that a node they
 are given belongs to the list: a node from another list is acted on as though
 it belonged, and both lists can be left inconsistent.
-[The FAQ](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/faq.md#what-happens-instead-of-an-error)
-lists every such case.
 
 ## When not to use it
 
@@ -233,9 +231,6 @@ bought with them.
 
 ## Documentation
 
-- [Guides, the FAQ and the architecture write-up](https://github.com/styiannis/abstract-linked-lists/tree/main/docs) —
-  getting a list running, the behaviour that surprises people, and how the
-  library is built, including what a node measurably costs.
 - [The generated API reference](https://styiannis.github.io/abstract-linked-lists/) —
   every signature and every type.
 - [Open an issue](https://github.com/styiannis/abstract-linked-lists/issues)
