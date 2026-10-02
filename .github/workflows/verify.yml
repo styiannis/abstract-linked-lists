@@ -9,17 +9,17 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 22 (build & test)
+      - name: Set up Node.js 22.12.0
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22.12.0'
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '18.12.0'
 
-      - name: Check dist loads (Node 18)
+      - name: Check dist loads (Node 18.12.0)
         run: npm run check-dist-loads
 
       - name: Set up Node.js 24 (recent major)
