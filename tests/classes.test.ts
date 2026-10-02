@@ -27,26 +27,26 @@ describe('Classes', () => {
 
         expect(previous.next).toBe(node);
         expect(node.next).toBe(next);
-        expect(next.next).toBe(null);
+        expect(next.next).toBeNull();
 
         // A node that does not precede the node is rejected, and nothing is changed.
         node.detach(next);
 
         expect(previous.next).toBe(node);
         expect(node.next).toBe(next);
-        expect(next.next).toBe(null);
+        expect(next.next).toBeNull();
 
         node.detach(previous);
 
         expect(previous.next).toBe(next);
-        expect(node.next).toBe(null);
-        expect(next.next).toBe(null);
+        expect(node.next).toBeNull();
+        expect(next.next).toBeNull();
 
         previous.detach(null);
 
-        expect(previous.next).toBe(null);
-        expect(node.next).toBe(null);
-        expect(next.next).toBe(null);
+        expect(previous.next).toBeNull();
+        expect(node.next).toBeNull();
+        expect(next.next).toBeNull();
       });
 
       it('Doubly linked list', () => {
@@ -60,49 +60,49 @@ describe('Classes', () => {
             isValidClassInstance(previous, 'DoublyLinkedListNode')
         ).toBe(true);
 
-        expect(previous.previous).toBe(null);
+        expect(previous.previous).toBeNull();
         expect(previous.next).toBe(node);
 
         expect(node.previous).toBe(previous);
         expect(node.next).toBe(next);
 
         expect(next.previous).toBe(node);
-        expect(next.next).toBe(null);
+        expect(next.next).toBeNull();
 
         node.detach();
 
-        expect(previous.previous).toBe(null);
+        expect(previous.previous).toBeNull();
         expect(previous.next).toBe(next);
 
-        expect(node.previous).toBe(null);
-        expect(node.next).toBe(null);
+        expect(node.previous).toBeNull();
+        expect(node.next).toBeNull();
 
         expect(next.previous).toBe(previous);
-        expect(next.next).toBe(null);
+        expect(next.next).toBeNull();
 
         previous.detach();
 
-        expect(previous.previous).toBe(null);
-        expect(previous.next).toBe(null);
+        expect(previous.previous).toBeNull();
+        expect(previous.next).toBeNull();
 
-        expect(node.previous).toBe(null);
-        expect(node.next).toBe(null);
+        expect(node.previous).toBeNull();
+        expect(node.next).toBeNull();
 
-        expect(next.previous).toBe(null);
-        expect(next.next).toBe(null);
+        expect(next.previous).toBeNull();
+        expect(next.next).toBeNull();
 
         node.next = next;
         next.previous = node;
         next.detach();
 
-        expect(previous.previous).toBe(null);
-        expect(previous.next).toBe(null);
+        expect(previous.previous).toBeNull();
+        expect(previous.next).toBeNull();
 
-        expect(node.previous).toBe(null);
-        expect(node.next).toBe(null);
+        expect(node.previous).toBeNull();
+        expect(node.next).toBeNull();
 
-        expect(next.previous).toBe(null);
-        expect(next.next).toBe(null);
+        expect(next.previous).toBeNull();
+        expect(next.next).toBeNull();
       });
     });
   });
@@ -115,8 +115,8 @@ describe('Classes', () => {
         expect(isValidClassInstance(list, 'SinglyLinkedList')).toBe(true);
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
       });
 
       it('Doubly linked list', () => {
@@ -125,8 +125,8 @@ describe('Classes', () => {
         expect(isValidClassInstance(list, 'DoublyLinkedList')).toBe(true);
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
       });
     });
 
@@ -139,7 +139,7 @@ describe('Classes', () => {
         for (let i = 0; i < NODES_SIZE; i++) {
           const lastNode = new SinglyLinkedListNode();
 
-          expect(list.pushNode(lastNode)).toBe(undefined);
+          expect(list.pushNode(lastNode)).toBeUndefined();
 
           if (0 === i) {
             firstNode = lastNode;
@@ -166,10 +166,10 @@ describe('Classes', () => {
           expect(removedNode).not.toBe(list.tail);
         }
 
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
 
-        expect(list.popNode()).toBe(undefined);
+        expect(list.popNode()).toBeUndefined();
       });
 
       it('Doubly linked list', () => {
@@ -180,7 +180,7 @@ describe('Classes', () => {
         for (let i = 0; i < NODES_SIZE; i++) {
           const lastNode = new DoublyLinkedListNode();
 
-          expect(list.pushNode(lastNode)).toBe(undefined);
+          expect(list.pushNode(lastNode)).toBeUndefined();
 
           if (0 === i) {
             firstNode = lastNode;
@@ -207,10 +207,10 @@ describe('Classes', () => {
           expect(removedNode).not.toBe(list.tail);
         }
 
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
 
-        expect(list.popNode()).toBe(undefined);
+        expect(list.popNode()).toBeUndefined();
       });
     });
 
@@ -223,7 +223,7 @@ describe('Classes', () => {
         for (let i = 0; i < NODES_SIZE; i++) {
           const firstNode = new SinglyLinkedListNode();
 
-          expect(list.unshiftNode(firstNode)).toBe(undefined);
+          expect(list.unshiftNode(firstNode)).toBeUndefined();
 
           if (0 === i) {
             lastNode = firstNode;
@@ -250,10 +250,10 @@ describe('Classes', () => {
           expect(removedNode).not.toBe(list.head);
         }
 
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
 
-        expect(list.shiftNode()).toBe(undefined);
+        expect(list.shiftNode()).toBeUndefined();
       });
 
       it('Doubly linked list', () => {
@@ -264,7 +264,7 @@ describe('Classes', () => {
         for (let i = 0; i < NODES_SIZE; i++) {
           const firstNode = new DoublyLinkedListNode();
 
-          expect(list.unshiftNode(firstNode)).toBe(undefined);
+          expect(list.unshiftNode(firstNode)).toBeUndefined();
 
           if (0 === i) {
             lastNode = firstNode;
@@ -291,10 +291,10 @@ describe('Classes', () => {
           expect(removedNode).not.toBe(list.head);
         }
 
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
 
-        expect(list.shiftNode()).toBe(undefined);
+        expect(list.shiftNode()).toBeUndefined();
       });
     });
 
@@ -304,7 +304,7 @@ describe('Classes', () => {
 
         const singleNode = new SinglyLinkedListNode();
 
-        expect(list.removeNode(singleNode)).toBe(undefined);
+        expect(list.removeNode(singleNode)).toBeUndefined();
 
         const first = new SinglyLinkedListNode();
         const second = new SinglyLinkedListNode();
@@ -317,7 +317,7 @@ describe('Classes', () => {
         }
 
         // A node that is not part of the list leaves the list untouched.
-        expect(list.removeNode(singleNode)).toBe(undefined);
+        expect(list.removeNode(singleNode)).toBeUndefined();
 
         expect(list.size).toBe(5);
         expect(list.head).toBe(first);
@@ -327,20 +327,20 @@ describe('Classes', () => {
 
         expect(list.size).toBe(4);
         expect(second.next).toBe(forth);
-        expect(third.next).toBe(null);
+        expect(third.next).toBeNull();
 
         list.removeNode(first);
 
         expect(list.size).toBe(3);
         expect(list.head).toBe(second);
-        expect(first.next).toBe(null);
+        expect(first.next).toBeNull();
 
         list.removeNode(fifth);
 
         expect(list.size).toBe(2);
         expect(list.tail).toBe(forth);
-        expect(forth.next).toBe(null);
-        expect(fifth.next).toBe(null);
+        expect(forth.next).toBeNull();
+        expect(fifth.next).toBeNull();
 
         // A node that still carries pointers is relinked from scratch.
         const newNode = new SinglyLinkedListNode(singleNode);
@@ -350,20 +350,20 @@ describe('Classes', () => {
         expect(list.size).toBe(3);
         expect(list.tail).toBe(newNode);
         expect(forth.next).toBe(newNode);
-        expect(newNode.next).toBe(null);
+        expect(newNode.next).toBeNull();
 
         list.removeNode(second);
         list.removeNode(forth);
         list.removeNode(newNode);
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
-        expect(second.next).toBe(null);
-        expect(forth.next).toBe(null);
-        expect(newNode.next).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
+        expect(second.next).toBeNull();
+        expect(forth.next).toBeNull();
+        expect(newNode.next).toBeNull();
 
-        expect(list.removeNode(singleNode)).toBe(undefined);
+        expect(list.removeNode(singleNode)).toBeUndefined();
 
         // "clear" detaches every node it removes.
         list.pushNode(first);
@@ -371,13 +371,13 @@ describe('Classes', () => {
         list.clear();
 
         expect(list.size).toBe(0);
-        expect(first.next).toBe(null);
+        expect(first.next).toBeNull();
 
         // The same holds for "unshiftNode".
         newNode.next = first;
         list.unshiftNode(newNode);
 
-        expect(newNode.next).toBe(null);
+        expect(newNode.next).toBeNull();
       });
 
       it('Doubly linked list', () => {
@@ -385,7 +385,7 @@ describe('Classes', () => {
 
         const singleNode = new DoublyLinkedListNode();
 
-        expect(list.removeNode(singleNode)).toBe(undefined);
+        expect(list.removeNode(singleNode)).toBeUndefined();
 
         const first = new DoublyLinkedListNode();
         const second = new DoublyLinkedListNode();
@@ -401,25 +401,25 @@ describe('Classes', () => {
 
         expect(list.size).toBe(4);
         expect(second.next).toBe(forth);
-        expect(third.next).toBe(null);
-        expect(third.previous).toBe(null);
+        expect(third.next).toBeNull();
+        expect(third.previous).toBeNull();
         expect(forth.previous).toBe(second);
 
         list.removeNode(first);
 
         expect(list.size).toBe(3);
         expect(list.head).toBe(second);
-        expect(first.next).toBe(null);
-        expect(first.previous).toBe(null);
-        expect(second.previous).toBe(null);
+        expect(first.next).toBeNull();
+        expect(first.previous).toBeNull();
+        expect(second.previous).toBeNull();
 
         list.removeNode(fifth);
 
         expect(list.size).toBe(2);
         expect(list.tail).toBe(forth);
-        expect(forth.next).toBe(null);
-        expect(fifth.next).toBe(null);
-        expect(fifth.previous).toBe(null);
+        expect(forth.next).toBeNull();
+        expect(fifth.next).toBeNull();
+        expect(fifth.previous).toBeNull();
 
         // A node that still carries pointers is relinked from scratch.
         const newNode = new DoublyLinkedListNode(
@@ -432,7 +432,7 @@ describe('Classes', () => {
         expect(list.size).toBe(3);
         expect(list.tail).toBe(newNode);
         expect(forth.next).toBe(newNode);
-        expect(newNode.next).toBe(null);
+        expect(newNode.next).toBeNull();
         expect(newNode.previous).toBe(forth);
 
         list.removeNode(second);
@@ -440,16 +440,16 @@ describe('Classes', () => {
         list.removeNode(newNode);
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
-        expect(second.next).toBe(null);
-        expect(second.previous).toBe(null);
-        expect(forth.next).toBe(null);
-        expect(forth.previous).toBe(null);
-        expect(newNode.next).toBe(null);
-        expect(newNode.previous).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
+        expect(second.next).toBeNull();
+        expect(second.previous).toBeNull();
+        expect(forth.next).toBeNull();
+        expect(forth.previous).toBeNull();
+        expect(newNode.next).toBeNull();
+        expect(newNode.previous).toBeNull();
 
-        expect(list.removeNode(singleNode)).toBe(undefined);
+        expect(list.removeNode(singleNode)).toBeUndefined();
 
         // "clear" detaches every node it removes.
         list.pushNode(first);
@@ -457,29 +457,29 @@ describe('Classes', () => {
         list.clear();
 
         expect(list.size).toBe(0);
-        expect(first.next).toBe(null);
-        expect(second.previous).toBe(null);
+        expect(first.next).toBeNull();
+        expect(second.previous).toBeNull();
 
         // The same holds for "unshiftNode".
         newNode.next = first;
         newNode.previous = first;
         list.unshiftNode(newNode);
 
-        expect(newNode.next).toBe(null);
-        expect(newNode.previous).toBe(null);
+        expect(newNode.next).toBeNull();
+        expect(newNode.previous).toBeNull();
 
         // A stale "previous" is overwritten at both ends, empty list or not.
         first.previous = second;
         list.unshiftNode(first);
 
-        expect(first.previous).toBe(null);
+        expect(first.previous).toBeNull();
         expect(first.next).toBe(newNode);
 
         list.clear();
         second.previous = first;
         list.pushNode(second);
 
-        expect(second.previous).toBe(null);
+        expect(second.previous).toBeNull();
       });
 
       it('"clear" detaches every node, for odd and even lengths', () => {
@@ -498,12 +498,12 @@ describe('Classes', () => {
           list.clear();
 
           expect(list.size).toBe(0);
-          expect(list.head).toBe(null);
-          expect(list.tail).toBe(null);
+          expect(list.head).toBeNull();
+          expect(list.tail).toBeNull();
 
           for (const node of nodes) {
-            expect(node.next).toBe(null);
-            expect(node.previous).toBe(null);
+            expect(node.next).toBeNull();
+            expect(node.previous).toBeNull();
           }
         }
       });
@@ -527,7 +527,7 @@ describe('Classes', () => {
         expect(list.head).toBe(first);
         expect(list.tail).toBe(third);
         expect(first.next).toBe(third);
-        expect(second.next).toBe(null);
+        expect(second.next).toBeNull();
 
         // Removing the node after the one before the tail moves the tail back.
         expect(list.removeNodeAfter(first)).toBe(third);
@@ -535,11 +535,11 @@ describe('Classes', () => {
         expect(list.size).toBe(1);
         expect(list.head).toBe(first);
         expect(list.tail).toBe(first);
-        expect(first.next).toBe(null);
-        expect(third.next).toBe(null);
+        expect(first.next).toBeNull();
+        expect(third.next).toBeNull();
 
         // The tail has no next node, so there is nothing to remove.
-        expect(list.removeNodeAfter(first)).toBe(undefined);
+        expect(list.removeNodeAfter(first)).toBeUndefined();
 
         expect(list.size).toBe(1);
         expect(list.head).toBe(first);
@@ -564,19 +564,19 @@ describe('Classes', () => {
         expect(list.tail).toBe(third);
         expect(first.next).toBe(third);
         expect(third.previous).toBe(first);
-        expect(second.next).toBe(null);
-        expect(second.previous).toBe(null);
+        expect(second.next).toBeNull();
+        expect(second.previous).toBeNull();
 
         expect(list.removeNodeAfter(first)).toBe(third);
 
         expect(list.size).toBe(1);
         expect(list.head).toBe(first);
         expect(list.tail).toBe(first);
-        expect(first.next).toBe(null);
-        expect(third.next).toBe(null);
-        expect(third.previous).toBe(null);
+        expect(first.next).toBeNull();
+        expect(third.next).toBeNull();
+        expect(third.previous).toBeNull();
 
-        expect(list.removeNodeAfter(first)).toBe(undefined);
+        expect(list.removeNodeAfter(first)).toBeUndefined();
 
         expect(list.size).toBe(1);
         expect(list.head).toBe(first);
@@ -588,9 +588,9 @@ describe('Classes', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();
 
-        expect(list.nodeAt(0)).toBe(undefined);
-        expect(list.nodeAt(1)).toBe(undefined);
-        expect(list.nodeAt(-1)).toBe(undefined);
+        expect(list.nodeAt(0)).toBeUndefined();
+        expect(list.nodeAt(1)).toBeUndefined();
+        expect(list.nodeAt(-1)).toBeUndefined();
 
         const nodeArray: SinglyLinkedListNode[] = [];
 
@@ -600,29 +600,29 @@ describe('Classes', () => {
           list.pushNode(n);
         }
 
-        expect(list.nodeAt(NODES_SIZE)).toBe(undefined);
+        expect(list.nodeAt(NODES_SIZE)).toBeUndefined();
 
         for (let i = 0; i < NODES_SIZE; i++) {
           expect(list.nodeAt(i)).toBe(nodeArray[i]);
         }
 
         expect(list.size).toBe(NODES_SIZE);
-        expect(list.head).not.toBe(null);
-        expect(list.tail).not.toBe(null);
+        expect(list.head).not.toBeNull();
+        expect(list.tail).not.toBeNull();
 
-        expect(list.clear()).toBe(undefined);
+        expect(list.clear()).toBeUndefined();
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
       });
 
       it('Doubly linked list', () => {
         const list = new DoublyLinkedList();
 
-        expect(list.nodeAt(0)).toBe(undefined);
-        expect(list.nodeAt(1)).toBe(undefined);
-        expect(list.nodeAt(-1)).toBe(undefined);
+        expect(list.nodeAt(0)).toBeUndefined();
+        expect(list.nodeAt(1)).toBeUndefined();
+        expect(list.nodeAt(-1)).toBeUndefined();
 
         const nodeArray: DoublyLinkedListNode[] = [];
 
@@ -632,21 +632,21 @@ describe('Classes', () => {
           list.pushNode(n);
         }
 
-        expect(list.nodeAt(NODES_SIZE)).toBe(undefined);
+        expect(list.nodeAt(NODES_SIZE)).toBeUndefined();
 
         for (let i = 0; i < NODES_SIZE; i++) {
           expect(list.nodeAt(i)).toBe(nodeArray[i]);
         }
 
         expect(list.size).toBe(NODES_SIZE);
-        expect(list.head).not.toBe(null);
-        expect(list.tail).not.toBe(null);
+        expect(list.head).not.toBeNull();
+        expect(list.tail).not.toBeNull();
 
-        expect(list.clear()).toBe(undefined);
+        expect(list.clear()).toBeUndefined();
 
         expect(list.size).toBe(0);
-        expect(list.head).toBe(null);
-        expect(list.tail).toBe(null);
+        expect(list.head).toBeNull();
+        expect(list.tail).toBeNull();
       });
     });
   });
