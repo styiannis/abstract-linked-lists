@@ -3,7 +3,7 @@
 Behaviour that surprises readers of the API, what the library does instead of
 throwing, and the questions the package shape raises.
 
-**Last verified:** 2026-10-14 · v1.3.0
+**Last verified:** 2026-10-07 · v2.0.0
 
 ## Behaviour
 
@@ -39,11 +39,34 @@ console.log([...queue].map((job) => job.id)); // [ 'j0', 'j2' ]
 console.log(queue.size); // 3
 ```
 
-The list has no method that does both halves, the relinking and the `size`,
-`head` and `tail` the node cannot reach. Decrement `size` yourself after
-`detach()`, and remove a node at either end through `shiftNode` or `popNode`.
-[Getting started](getting-started.md#remove-a-node-you-are-already-holding)
-puts the three cases in one function.
+Call the list's `removeNode` instead. It does both halves — the relinking and
+the `size`, `head` and `tail` the node cannot reach:
+
+```typescript
+import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
+
+class Job extends DoublyLinkedListNode {
+  constructor(
+    public readonly id: string,
+    public readonly payload: string
+  ) {
+    super();
+  }
+}
+
+const queue = new DoublyLinkedList<Job>();
+
+const first = new Job('j1', 'resize');
+
+queue.pushNode(first);
+queue.pushNode(new Job('j2', 'upload'));
+queue.unshiftNode(new Job('j0', 'authenticate'));
+
+queue.removeNode(first);
+
+console.log([...queue].map((job) => job.id)); // [ 'j0', 'j2' ]
+console.log(queue.size); // 2
+```
 
 ### `head` or `tail` still points at a node I detached
 
@@ -108,8 +131,9 @@ console.log(list.size, list.head); // 0 null
 console.log(n1.next, n2.previous); // null null
 ```
 
-No node leaves the list still pointing into it. Holding a reference to one of
-them does not keep the rest of the old list in memory.
+No node leaves the list still pointing into it. Each one can be pushed into
+another list as it is, and holding a reference to one of them does not keep the
+rest of the old list in memory.
 
 ### Why is `node.next` typed as the base class instead of my subclass?
 
@@ -204,8 +228,8 @@ pushes every node onto a stack and then drains it: the same `O(n)` time, but
 
 Not the node the iterator is currently on. To advance, the iterator reads the
 current node's `next`, or its `previous` when walking a doubly linked list
-backwards. `detach()`, `shiftNode` and `popNode` all set those pointers to
-`null`, so the walk stops at the node you removed:
+backwards. `removeNode` and `detach()` both set those pointers to `null`, so the
+walk stops at the node you removed:
 
 ```typescript
 import { DoublyLinkedList, DoublyLinkedListNode } from 'abstract-linked-lists';
@@ -224,8 +248,7 @@ const seen: string[] = [];
 for (const n of l) {
   seen.push(n.id);
   if (n.id === 'x') {
-    n.detach();
-    l.size -= 1;
+    l.removeNode(n);
   }
 }
 
@@ -245,7 +268,7 @@ works differently. It first copies every node onto a stack, then walks the stack
 rather than the links. Removals made during the walk do not affect it: it never
 stops early, and it still visits nodes removed after it started.
 
-In every case, to remove the node you are on safely, iterate over a snapshot:
+In every case, to remove safely the node you are on, iterate over a snapshot:
 `for (const n of [...list])`.
 
 ### Can the same node be in two lists at once?
@@ -364,24 +387,36 @@ misuse silent rather than loud. These are the cases worth knowing:
 | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
 | `nodeAt(i)` with `i < 0` or `i >= size`                                              | `undefined`                                                                                                         |
 | `popNode()` or `shiftNode()` on an empty list                                        | `undefined`                                                                                                         |
+| `removeNode(node)` on an empty list                                                  | `undefined`                                                                                                         |
+| `removeNode(node)`, singly, where `node` is not in this list                         | `undefined`. The search from `head` never finds `node`, so nothing changes                                          |
+| `removeNode(node)`, doubly, where `node` is not in this list                         | `node` is unlinked from the list it is actually in, this list's `size` drops by one, and `node` is returned         |
+| `removeNodeAfter(predecessor)` where `predecessor` is the tail                       | `undefined`                                                                                                         |
+| `removeNodeAfter(predecessor)` where `predecessor` is not in this list               | the node after `predecessor` is unlinked from the list it is actually in, and this list's `size` drops by one       |
 | `pushNode(node)` where `node` is still in another list                               | `node`'s pointers are overwritten, and the list it came from still leads to it                                      |
 | `node.detach(...)` on a node that is already detached                                | nothing happens                                                                                                     |
 | singly `node.detach(predecessor)` where `predecessor.next` is not `node`             | nothing happens. The call checks this before relinking                                                              |
 | singly `node.detach(null)` where `node` is not the head                              | `node` loses its `next`, so the nodes after it drop out of the chain. The list's `size` and `tail` still count them |
 | `new DoublyLinkedListNode(previous, next)` where `previous` and `next` are in a list | the new node is linked between them, and the list's `size` does not count it                                        |
 
-The rows that take a node share one cause, and it is deliberate: a node holds
-no reference to its list. A call handed a node therefore cannot check in
-constant time that the node belongs to the list it was called on. Giving it that reference would cost
+Most of these have one cause, and it is deliberate: a node holds no reference to
+its list. A call handed a node therefore cannot check in constant time that the
+node belongs to the list it was called on. Giving it that reference would cost
 every node another pointer.
 
 So these calls accept a node from another list without noticing, and act on it
 as though it were theirs. Adding it, with `pushNode` or `unshiftNode`,
 overwrites its pointers while the list it came from still points at it — see
 [the question on sharing a node](#can-the-same-node-be-in-two-lists-at-once).
+Removing it, with `removeNode` on a doubly linked list or `removeNodeAfter` on
+either, unlinks it from the list it is really in and decrements the `size` of
+the list you called. Both lists are then wrong: one has lost a node without
+knowing, and the other counts one node fewer than it holds.
 
-One call is an exception. The singly linked `detach(predecessor)` checks, on
-purpose, because one comparison settles it:
+Two calls are exceptions, for different reasons. The singly linked `removeNode`
+has to walk from `head` to find the predecessor anyway. If the node is not in
+the list, the walk ends without finding it and the call returns `undefined`.
+That is a consequence of the walk, not a check. The singly linked
+`detach(predecessor)` does check, on purpose, because one comparison settles it:
 `predecessor.next === node`. `detach(null)` cannot be checked. Passing `null`
 claims that the node is the head, and a singly linked node does not know what
 precedes it.
@@ -426,8 +461,8 @@ console.log(pushNode === doublyLinkedList.list.pushNode); // true
 All three paths reach the same function, so they can be mixed freely, and each
 resolves to the ES or CommonJS build like the root does. The classes and the
 interfaces are exported from the root only.
-[Architecture and API](architecture-and-api.md#the-public-surface) lists every
-export.
+[architecture-and-api.md](architecture-and-api.md#the-public-surface) lists
+every export.
 
 ### Will unused parts be dropped from my bundle?
 
@@ -443,5 +478,4 @@ Nothing. `dependencies` and `peerDependencies` are both absent from
 
 ### What are the version requirements?
 
-Node 18.12 or later, and npm 8 or later, as declared in `engines`. The published
-code targets ES2022.
+Node 18.12 or later, and npm 8 or later. The published code targets ES2022.
