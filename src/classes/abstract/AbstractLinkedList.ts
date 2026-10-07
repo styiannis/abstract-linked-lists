@@ -62,4 +62,20 @@ export abstract class AbstractLinkedList<N> {
    * @returns The removed node, or `undefined` if the list is empty.
    */
   abstract shiftNode(): N | undefined;
+
+  /**
+   * Removes and returns a specific node from the list.
+   *
+   * @param node - The node to remove.
+   * @returns The removed node, or `undefined` if there was nothing to remove.
+   */
+  abstract removeNode(node: N): N | undefined;
+
+  /**
+   * Removes and returns the node that follows a given node in the list.
+   *
+   * @param predecessor - The node preceding the node to remove.
+   * @returns The removed node, or `undefined` if `predecessor` has no next node.
+   */
+  abstract removeNodeAfter(predecessor: N): N | undefined;
 }

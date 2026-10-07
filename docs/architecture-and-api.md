@@ -1,6 +1,6 @@
 # Architecture and API
 
-**Last verified:** 2026-10-14 · v1.3.0
+**Last verified:** 2026-10-07 · v2.0.0
 
 ## One pointer as the whole base
 
@@ -18,23 +18,22 @@ Everything the library offers is built on top of that, and the size of the
 abstraction is the point: a node small enough to carry no assumptions is a node
 that any object can become by extending it.
 
-A singly linked node adds one field to the object it extends, a doubly linked
-node two.
+The cost is small. On 64-bit Node.js, an object holding a single integer takes
+32 bytes, and each pointer adds 8: a singly linked node takes 40 bytes, a doubly
+linked node 48.
 
 Because the node is the caller's own object, the caller never has to search for
 it. On a doubly linked list, nothing else is needed either: the node's
-`previous` and `next` are the two neighbours to relink, so `detach()` is a few
-pointer assignments. A singly linked node knows only its `next`, so
-`detach(predecessor)` takes the predecessor from the caller, and a caller
-without it has to walk from `head` to find it.
+`previous` and `next` are the two neighbours to relink, so removal is a few
+pointer assignments. A singly linked node knows only its `next`, so the list
+still has to walk from `head` to find the predecessor, which makes the same
+removal `O(n)` — see [Complexity](#complexity-as-implemented).
 
 What the node does not hold is a reference to its list, so `detach()` cannot
-update the list's `size`, `head` or `tail`. The list's own removals, `shiftNode`
-and `popNode`, update both, but only at the ends. A node between two others is
-detached and counted out by the caller, as
-[Getting started](getting-started.md#remove-a-node-you-are-already-holding)
-shows. The reference is left out on purpose, because it would add another
-pointer to every node.
+update the list's `size`, `head` or `tail`. `removeNode` covers that from the
+other side: it is a method on the list and is handed the node, so it can update
+both the node's links and the bookkeeping the node cannot reach. The reference
+is left out on purpose, because it would add another pointer to every node.
 
 ## Two layers
 
@@ -140,32 +139,38 @@ its three modules under one more — eight subpaths in all:
 | `ISinglyLinkedListNode` `IDoublyLinkedListNode`                | interface |
 
 Each namespace holds `list`, `node` and `iterators`. `list` provides `create`,
-`clear`, `nodeAt`, `pushNode`, `unshiftNode`, `popNode` and `shiftNode`; `node`
-provides `create` and `detach`; `iterators` provides `inOrder` and
-`inReverseOrder`.
+`clear`, `nodeAt`, `pushNode`, `unshiftNode`, `removeNode`, `removeNodeAfter`,
+`popNode` and `shiftNode`; `node` provides `create` and `detach`; `iterators`
+provides `inOrder` and `inReverseOrder`.
 
 ## Complexity, as implemented
 
-| Operation        | Singly                        | Doubly                |
-| ---------------- | ----------------------------- | --------------------- |
-| `pushNode`       | `O(1)`                        | `O(1)`                |
-| `unshiftNode`    | `O(1)`                        | `O(1)`                |
-| `shiftNode`      | `O(1)`                        | `O(1)`                |
-| `popNode`        | `O(n)`                        | `O(1)`                |
-| `nodeAt(k)`      | `O(k)`                        | `O(min(k, n - k))`    |
-| `clear`          | `O(n)`                        | `O(n)`                |
-| `detach`         | `O(1)`, given the predecessor | `O(1)`                |
-| `inOrder`        | `O(n)` / `O(1)` space         | `O(n)` / `O(1)` space |
-| `inReverseOrder` | `O(n)` / `O(n)` space         | `O(n)` / `O(1)` space |
+| Operation         | Singly                        | Doubly                |
+| ----------------- | ----------------------------- | --------------------- |
+| `pushNode`        | `O(1)`                        | `O(1)`                |
+| `unshiftNode`     | `O(1)`                        | `O(1)`                |
+| `removeNode`      | `O(n)`                        | `O(1)`                |
+| `removeNodeAfter` | `O(1)`                        | `O(1)`                |
+| `shiftNode`       | `O(1)`                        | `O(1)`                |
+| `popNode`         | `O(n)`                        | `O(1)`                |
+| `nodeAt(k)`       | `O(k)`                        | `O(min(k, n - k))`    |
+| `clear`           | `O(n)`                        | `O(n)`                |
+| `detach`          | `O(1)`, given the predecessor | `O(1)`                |
+| `inOrder`         | `O(n)` / `O(1)` space         | `O(n)` / `O(1)` space |
+| `inReverseOrder`  | `O(n)` / `O(n)` space         | `O(n)` / `O(1)` space |
 
-Three of these are worth reading twice. `popNode` on a singly linked list walks
+Four of these are worth reading twice. `popNode` on a singly linked list walks
 from the head to find the predecessor of the tail, so a stack built on one
 pushes and pops at the head, where both are `O(1)`; one that pops at the tail
 pays `O(n)` per pop. `inReverseOrder` on a singly linked list allocates an array
 of every node, which is the only allocation the library makes that grows with
-the data. And `clear` visits every node to set its pointers to `null`, so that
-no node leaves the list still pointing into it. Resetting `size`, `head` and
-`tail` alone would be constant time.
+the data. And the two removal functions differ by what the caller supplies
+rather than by what they do: `removeNode` is handed a node and, on a singly
+linked list, walks from the head to find what precedes it, while
+`removeNodeAfter` is handed that position directly and is constant time on both
+structures. The walk is not overhead that better code would avoid — it is the
+predecessor lookup a singly linked node cannot perform, and `O(1)` removal is
+available only to a caller who already holds the predecessor.
 
 ## Extending
 
@@ -200,15 +205,7 @@ class IndexedList<
       return;
     }
     this.index.delete(key);
-    if (node === this.head) {
-      return this.shiftNode();
-    }
-    if (node === this.tail) {
-      return this.popNode();
-    }
-    node.detach();
-    this.size -= 1;
-    return node;
+    return this.removeNode(node);
   }
 }
 
@@ -228,24 +225,25 @@ console.log(cache.removeByKey('a')); // undefined
 ```
 
 The `Map` answers the question the list cannot — which node carries this key.
-The rest is constant time and returns the node, as `shiftNode` and `popNode` do:
-the ends go through them, and a node between two others is detached and counted
-out. Nothing here re-implements a pointer update the list already performs.
+`removeNode` does the rest in constant time and returns the node, so
+`removeByKey` inherits the shape of the call it delegates to. Nothing here
+re-implements any part of the list.
 
 What `IndexedList` does not cover is every way out. `popNode`, `shiftNode`,
-`clear` and a bare `detach()` all bypass the two overrides above, so a node
-removed through one of them stays in the index. A later `removeByKey` finds and
-returns it, even though it has already left the list, and decrements `size`
-again for a node that `popNode`, `shiftNode` or `clear` had already counted
-out. A subclass that must stay correct under every mutator overrides all of
-them. This example shows the delegation, not the whole maintenance burden.
+`removeNodeAfter`, `clear` and a bare `removeNode` all bypass the two overrides
+above, so a node removed through one of them stays in the index. A later
+`removeByKey` finds and returns it, even though it has already left the list.
+Unless the list has emptied in the meantime, that call also decrements `size` a
+second time. A subclass that must stay correct under every mutator overrides all
+of them. This example shows the delegation, not the whole maintenance burden.
 
 **Implement an abstract class** when the storage or the invariants are your own
 — a list that maintains sorted order on insertion, or one whose nodes are not
 objects of yours at all. `AbstractLinkedList<N>` requires `[Symbol.iterator]`,
-`clear`, `nodeAt`, `pushNode`, `unshiftNode`, `popNode` and `shiftNode`.
-`AbstractSinglyLinkedList` and `AbstractDoublyLinkedList` add nothing but the
-node-type constraint. Every list member is common to both
+`clear`, `nodeAt`, `pushNode`, `unshiftNode`, `popNode`, `shiftNode`,
+`removeNode(node)` and `removeNodeAfter(predecessor)`, the last two returning
+`N | undefined`. `AbstractSinglyLinkedList` and `AbstractDoublyLinkedList` add
+nothing but the node-type constraint. Every list member is common to both
 structures. The two differ in what an operation costs, not in what it is called
 or what it is passed. The abstract signature declares
 `[Symbol.iterator](reversed: boolean)`, so an implementation accepts the
