@@ -15,7 +15,9 @@ export function isValidObjectInstance(
     return false;
   }
 
-  const props = Object.getOwnPropertyNames(instance).sort();
+  const props = Object.getOwnPropertyNames(instance).sort(
+    (a: string, b: string) => a.localeCompare(b)
+  );
 
   if ('singly-linked-list-node' === instanceType) {
     return arraysEqual(props, ['next']);

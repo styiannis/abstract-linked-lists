@@ -10,13 +10,15 @@ import {
 } from '../../src';
 import { arraysEqual } from './arraysEqual';
 
+const stringSort = (a: string, b: string) => a.localeCompare(b);
+
 function isValidListClassInstance(
   instance: unknown,
   instanceType: 'SinglyLinkedList' | 'DoublyLinkedList'
 ) {
-  const props = Object.getOwnPropertyNames(instance).sort();
+  const props = Object.getOwnPropertyNames(instance).sort(stringSort);
   const proto = Object.getPrototypeOf(instance);
-  const protoProps = Object.getOwnPropertyNames(proto).sort();
+  const protoProps = Object.getOwnPropertyNames(proto).sort(stringSort);
 
   const expectedProps = ['head', 'size', 'tail'];
   const expectedProtoProps = [
@@ -54,9 +56,9 @@ function isValidNodeClassInstance(
   instance: unknown,
   instanceType: 'SinglyLinkedListNode' | 'DoublyLinkedListNode'
 ) {
-  const props = Object.getOwnPropertyNames(instance).sort();
+  const props = Object.getOwnPropertyNames(instance).sort(stringSort);
   const proto = Object.getPrototypeOf(instance);
-  const protoProps = Object.getOwnPropertyNames(proto).sort();
+  const protoProps = Object.getOwnPropertyNames(proto).sort(stringSort);
 
   const expectedProtoProps = ['constructor', 'detach'];
 
