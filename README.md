@@ -149,9 +149,10 @@ cleared node can be added again.
 
 `node.detach(...)` relinks the node's neighbours and resets the node's own
 pointers. It does not touch the list: `size`, `head` and `tail` keep their
-values, even when the node was the list's `head` or `tail`. On a singly linked list,
-`detach(predecessor)` first checks that `predecessor.next` is the node, and does
-nothing if it is not.
+values, even when the node was the list's `head` or `tail`. On a singly linked
+list, `detach(predecessor)` first checks that `predecessor.next` is the node,
+and does nothing if it is not. Passing `null` for a node that has a predecessor
+leaves that predecessor pointing at the node.
 
 Nothing in the library throws. An index out of range, or a removal from an
 empty list, returns `undefined`. No call that takes a node checks that it

@@ -46,7 +46,9 @@ export class SinglyLinkedListNode
    * Detaches the node by updating the `next` reference of its predecessor.
    *
    * After detachment, the node's `next` pointer is set to `null`. If
-   * `predecessor` does not precede the node, nothing is changed.
+   * `predecessor` does not precede the node, nothing is changed. Passing
+   * `null` for a node that has a predecessor leaves that predecessor
+   * pointing at it.
    *
    * @param predecessor - The preceding node, or `null` if the node has no predecessor.
    * @example
