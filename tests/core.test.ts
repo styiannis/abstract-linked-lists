@@ -20,6 +20,13 @@ describe('Core', () => {
         expect(node.next).toBe(next);
         expect(next.next).toBeNull();
 
+        // A node that does not precede the node is rejected, and nothing is changed.
+        singlyLinkedList.node.detach(node, next);
+
+        expect(previous.next).toBe(node);
+        expect(node.next).toBe(next);
+        expect(next.next).toBeNull();
+
         singlyLinkedList.node.detach(node, previous);
 
         expect(previous.next).toBe(next);

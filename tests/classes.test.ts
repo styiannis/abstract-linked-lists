@@ -29,6 +29,13 @@ describe('Classes', () => {
         expect(node.next).toBe(next);
         expect(next.next).toBeNull();
 
+        // A node that does not precede the node is rejected, and nothing is changed.
+        node.detach(next);
+
+        expect(previous.next).toBe(node);
+        expect(node.next).toBe(next);
+        expect(next.next).toBeNull();
+
         node.detach(previous);
 
         expect(previous.next).toBe(next);
