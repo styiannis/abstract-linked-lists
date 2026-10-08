@@ -17,7 +17,8 @@ npm install abstract-linked-lists
 ```
 
 `yarn add` and `pnpm add` work the same way. The package requires Node 18.12 or
-later, and ships an ES build and a CommonJS build with type definitions for each.
+later, and ships an ES build and a CommonJS build with type definitions for
+each.
 
 ## The node is the abstraction
 
@@ -36,7 +37,9 @@ class TaskNode extends DoublyLinkedListNode {
 
 const queue = new DoublyLinkedList<TaskNode>();
 
-queue.pushNode(new TaskNode('fetch'));
+const fetchTask = new TaskNode('fetch');
+
+queue.pushNode(fetchTask);
 queue.pushNode(new TaskNode('parse'));
 
 queue.unshiftNode(new TaskNode('auth'));
@@ -53,8 +56,8 @@ for (const node of queue[Symbol.iterator](true)) {
 }
 ```
 
-The generic parameter carries the subclass through, so `head`, `tail`,
-`nodeAt` and the iterators all return `TaskNode`.
+The generic parameter carries the subclass through, so `head`, `tail`, `nodeAt`
+and the iterators all return `TaskNode`.
 
 ## Two layers over the same structures
 
@@ -65,8 +68,8 @@ allocate class instances:
 ```typescript
 import {
   doublyLinkedList,
-  IDoublyLinkedList,
-  IDoublyLinkedListNode,
+  type IDoublyLinkedList,
+  type IDoublyLinkedListNode,
 } from 'abstract-linked-lists';
 
 const { iterators, list: dll, node: dllNode } = doublyLinkedList;
@@ -105,8 +108,8 @@ import {
 The same root exports the five abstract classes listed under [API](#api) and
 the list interfaces `ILinkedList`, `ISinglyLinkedList` and `IDoublyLinkedList`.
 
-Each structure is additionally published under its own subpath, and each of
-its modules (`list`, `node`, `iterators`) under one more, for code that should
+Each structure is additionally published under its own subpath, and each of its
+modules (`list`, `node`, `iterators`) under one more, for code that should
 carry nothing else:
 
 ```typescript
@@ -136,9 +139,9 @@ three and the two abstract node classes, `AbstractSinglyLinkedListNode` and
 | `[Symbol.iterator](reversed?)` | `O(n)`                                  | `O(n)`          |
 | `node.detach(...)`             | `O(1)`, caller supplies the predecessor | `O(1)`          |
 
-Reverse iteration on a singly linked list first copies every node onto a
-stack, so it takes `O(n)` space. On a doubly linked list it follows the
-`previous` pointers in constant space.
+Reverse iteration on a singly linked list first copies every node onto a stack,
+so it takes `O(n)` space. On a doubly linked list it follows the `previous`
+pointers in constant space.
 
 `clear()` resets `size`, `head` and `tail` and leaves the nodes' own pointers
 as they were. `pushNode` and `unshiftNode` overwrite those pointers, so a
@@ -146,7 +149,9 @@ cleared node can be added again.
 
 `node.detach(...)` relinks the node's neighbours and resets the node's own
 pointers. It does not touch the list: `size`, `head` and `tail` keep their
-values, even when the node was the list's `head` or `tail`.
+values, even when the node was the list's `head` or `tail`. On a singly linked list,
+`detach(predecessor)` first checks that `predecessor.next` is the node, and does
+nothing if it is not.
 
 Nothing in the library throws. An index out of range, or a removal from an
 empty list, returns `undefined`. No call that takes a node checks that it
@@ -170,8 +175,8 @@ bought with them.
 
 ## Documentation
 
-- [The generated API reference](https://styiannis.github.io/abstract-linked-lists/) —
-  every signature and every type.
+- [The generated API reference](https://styiannis.github.io/abstract-linked-lists/)
+  — every signature and every type.
 - [Open an issue](https://github.com/styiannis/abstract-linked-lists/issues)
   for a question or a bug report.
 
