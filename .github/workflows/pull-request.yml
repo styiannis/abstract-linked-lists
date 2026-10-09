@@ -14,19 +14,20 @@ concurrency:
 
 jobs:
   pull-request:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Get package.json version
         uses: ./.github/package-actions/get-version
@@ -47,16 +48,19 @@ jobs:
 
       - name: Exit if the release or tag already exists
         if: steps.release-exists.outputs.exists == 'true' || steps.tag-exists.outputs.exists == 'true'
+        env:
+          RELEASE_EXISTS: ${{ steps.release-exists.outputs.exists }}
+          TAG_EXISTS: ${{ steps.tag-exists.outputs.exists }}
         run: |
-          echo "Release already exists: ${{ steps.release-exists.outputs.exists }}"
-          echo "Tag already exists: ${{ steps.tag-exists.outputs.exists }}"
+          echo "Release already exists: $RELEASE_EXISTS"
+          echo "Tag already exists: $TAG_EXISTS"
           exit 1
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install commitlint dependencies
-        run: npm i --no-save @commitlint/cli@21.2.2 @commitlint/config-conventional@21.2.2
+        run: npm install --ignore-scripts --no-save @commitlint/cli@21.2.2 @commitlint/config-conventional@21.2.2
 
       - name: Run Commitlint on commits
         id: commitlint-commits
@@ -64,13 +68,13 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: npx commitlint -V --from "origin/$BASE_REF" --to "$HEAD_SHA"
+        run: npx --no-install commitlint -V --from "origin/$BASE_REF" --to "$HEAD_SHA"
 
       - name: Run Commitlint on PR title
         if: steps.commitlint-commits.outcome == 'failure'
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: echo "$PR_TITLE" | npx commitlint -V
+        run: echo "$PR_TITLE" | npx --no-install commitlint -V
 
       - name: Verify (type checks, linting, build, dist checks)
         run: npm run verify
