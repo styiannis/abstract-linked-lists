@@ -95,7 +95,7 @@ export class SinglyLinkedList<
   }
 
   /**
-   * Resets the list to its initial empty state. The nodes keep their pointers.
+   * Resets the list to its initial empty state, detaching every node.
    *
    * @example
    * ```typescript

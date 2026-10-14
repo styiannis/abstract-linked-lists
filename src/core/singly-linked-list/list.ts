@@ -11,14 +11,23 @@ export function create<L extends ISinglyLinkedList>() {
 }
 
 /**
- * Clears a singly linked list by removing all nodes.
+ * Clears a singly linked list, detaching every node.
  *
- * The nodes keep their pointers.
+ * - Time Complexity: `O(n)`
+ * - Space Complexity: `O(1)`
  *
  * @typeParam L - The type of the list.
  * @param instance - The list instance.
  */
 export function clear<L extends ISinglyLinkedList>(instance: L) {
+  let node = instance.head;
+
+  while (node) {
+    const next = node.next;
+    node.next = null;
+    node = next;
+  }
+
   instance.size = 0;
   instance.head = null;
   instance.tail = null;

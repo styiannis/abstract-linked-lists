@@ -227,6 +227,62 @@ describe('Classes', () => {
       });
     });
 
+    describe('Empty a list using the "clear" method, which detaches every node', () => {
+      it('Singly linked list', () => {
+        for (const length of [0, 1, 2, 3, 4, 5]) {
+          const list = new SinglyLinkedList();
+
+          const nodes = Array.from(
+            { length },
+            () => new SinglyLinkedListNode()
+          );
+
+          for (const node of nodes) {
+            list.pushNode(node);
+          }
+
+          expect(list.clear()).toBeUndefined();
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBeNull();
+          expect(list.tail).toBeNull();
+          expect([...list]).toHaveLength(0);
+
+          for (const node of nodes) {
+            expect(node.next).toBeNull();
+          }
+        }
+      });
+
+      // Odd and even lengths end the two-ended loop on one node or on two.
+      it('Doubly linked list', () => {
+        for (const length of [0, 1, 2, 3, 4, 5]) {
+          const list = new DoublyLinkedList();
+
+          const nodes = Array.from(
+            { length },
+            () => new DoublyLinkedListNode()
+          );
+
+          for (const node of nodes) {
+            list.pushNode(node);
+          }
+
+          expect(list.clear()).toBeUndefined();
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBeNull();
+          expect(list.tail).toBeNull();
+          expect([...list]).toHaveLength(0);
+
+          for (const node of nodes) {
+            expect(node.next).toBeNull();
+            expect(node.previous).toBeNull();
+          }
+        }
+      });
+    });
+
     describe('Add nodes to a list using the "pushNode" method, then empty the list using the "popNode" removal method', () => {
       it('Singly linked list', () => {
         const list = new SinglyLinkedList();

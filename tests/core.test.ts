@@ -217,6 +217,58 @@ describe('Core', () => {
         expect(stale.next).toBeNull();
       });
     });
+
+    describe('Empty a list using the "clear" function, which detaches every node', () => {
+      it('Singly linked list', () => {
+        for (const length of [0, 1, 2, 3, 4, 5]) {
+          const list = singlyLinkedList.list.create();
+
+          const nodes = Array.from({ length }, () =>
+            singlyLinkedList.node.create()
+          );
+
+          for (const node of nodes) {
+            singlyLinkedList.list.pushNode(list, node);
+          }
+
+          expect(singlyLinkedList.list.clear(list)).toBeUndefined();
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBeNull();
+          expect(list.tail).toBeNull();
+
+          for (const node of nodes) {
+            expect(node.next).toBeNull();
+          }
+        }
+      });
+
+      // Odd and even lengths end the two-ended loop on one node or on two.
+      it('Doubly linked list', () => {
+        for (const length of [0, 1, 2, 3, 4, 5]) {
+          const list = doublyLinkedList.list.create();
+
+          const nodes = Array.from({ length }, () =>
+            doublyLinkedList.node.create()
+          );
+
+          for (const node of nodes) {
+            doublyLinkedList.list.pushNode(list, node);
+          }
+
+          expect(doublyLinkedList.list.clear(list)).toBeUndefined();
+
+          expect(list.size).toBe(0);
+          expect(list.head).toBeNull();
+          expect(list.tail).toBeNull();
+
+          for (const node of nodes) {
+            expect(node.next).toBeNull();
+            expect(node.previous).toBeNull();
+          }
+        }
+      });
+    });
   });
 
   describe('Iterators', () => {
