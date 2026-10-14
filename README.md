@@ -135,7 +135,7 @@ three and the two abstract node classes, `AbstractSinglyLinkedListNode` and
 | `shiftNode()`                  | `O(1)`                                  | `O(1)`          |
 | `popNode()`                    | `O(n)`                                  | `O(1)`          |
 | `nodeAt(k)`                    | `O(k)`                                  | `O(min(k,n-k))` |
-| `clear()`                      | `O(1)`                                  | `O(1)`          |
+| `clear()`                      | `O(n)`                                  | `O(n)`          |
 | `[Symbol.iterator](reversed?)` | `O(n)`                                  | `O(n)`          |
 | `node.detach(...)`             | `O(1)`, caller supplies the predecessor | `O(1)`          |
 
@@ -143,9 +143,8 @@ Reverse iteration on a singly linked list first copies every node onto a stack,
 so it takes `O(n)` space. On a doubly linked list it follows the `previous`
 pointers in constant space.
 
-`clear()` resets `size`, `head` and `tail` and leaves the nodes' own pointers
-as they were. `pushNode` and `unshiftNode` overwrite those pointers, so a
-cleared node can be added again.
+`clear()` sets every node's pointers to `null`, then resets `size`, `head` and
+`tail`. Visiting every node is what makes it `O(n)`.
 
 `node.detach(...)` relinks the node's neighbours and resets the node's own
 pointers. It does not touch the list: `size`, `head` and `tail` keep their
@@ -154,16 +153,23 @@ list, `detach(predecessor)` first checks that `predecessor.next` is the node,
 and does nothing if it is not. Passing `null` for a node that has a predecessor
 leaves that predecessor pointing at the node.
 
+The lists have no method that removes a node from between two others. Detaching
+it and decrementing `size` does, and
+[the getting-started guide](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/getting-started.md#remove-a-node-you-are-already-holding)
+shows a function that covers the ends as well.
+
 Nothing in the library throws. An index out of range, or a removal from an
 empty list, returns `undefined`. No call that takes a node checks that it
 belongs to the list: a node from another list is acted on as though it
 belonged, and both lists can be left inconsistent.
+[The FAQ](https://github.com/styiannis/abstract-linked-lists/blob/main/docs/faq.md#what-happens-instead-of-an-error)
+lists every such case.
 
 ## When not to use it
 
-A linked list pays for its constant-time edits with a pointer in every node
-and a walk for every traversal. What follows are the cases where nothing is
-bought with them.
+A linked list pays for its constant-time edits with a pointer in every node and
+a walk for every traversal. What follows are the cases where nothing is bought
+with them.
 
 | If this describes the problem                     | Reach for                                                                                                                                                                              |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -176,6 +182,9 @@ bought with them.
 
 ## Documentation
 
+- [Guides, the FAQ and the architecture write-up](https://github.com/styiannis/abstract-linked-lists/tree/main/docs)
+  — getting a list running, the behaviour that surprises people, and how the
+  library is built.
 - [The generated API reference](https://styiannis.github.io/abstract-linked-lists/)
   — every signature and every type.
 - [Open an issue](https://github.com/styiannis/abstract-linked-lists/issues)
