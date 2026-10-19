@@ -193,17 +193,17 @@ linked list both are constant time.
 ## Choose singly or doubly
 
 The two classes expose the same methods, so the choice is one of cost.
-`pushNode`, `unshiftNode`, `shiftNode` and forward iteration are unchanged on a
+`pushNode`, `unshiftNode`, `shiftNode` and forward iteration cost the same on a
 `SinglyLinkedList`. `popNode`, `nodeAt`, reverse iteration and removal from the
-middle are not.
+middle do not.
 
 Use `SinglyLinkedList` when you add at either end, remove only at the head, and
 walk forward. It costs one pointer less per node, and that is the whole of the
 difference in its favour.
 
 Everything else favours the doubly linked list. On a singly linked list `nodeAt`
-always walks from `head`, since without `previous` pointers there is no nearer
-end to start from, and reverse iteration builds a stack of every node instead of
+always walks from `head`, since without `previous` pointers a walk cannot start
+from `tail`, and reverse iteration builds a stack of every node instead of
 following those pointers. `popNode` walks the whole list to reach the
 predecessor of the last node. A node in the middle is unlinked by
 `detach(predecessor)`, so the caller has to hold its predecessor, or walk from
@@ -236,16 +236,17 @@ console.log(
 
 With the predecessor in hand, as `first` is here, the unlinking is constant time.
 Without it, the walk that finds it is `O(n)`, and that walk is what the doubly
-linked `previous` pointer saves. Had `second` been the tail, `list.tail` would
-have needed `first` as well, and `popNode` would have walked to find it.
+linked `previous` pointer saves. Had `second` been the tail, `detach` would have
+left `list.tail` pointing at it. `popNode` removes a tail correctly, but walks
+from `head` to find its predecessor.
 
 ## The same operations without the classes
 
-Apart from `Symbol.iterator`, every method shown above is one line:
-`DoublyLinkedList.popNode` is `return popNode(this)`, and the rest have that
-shape too. The functions the classes delegate to are exported, so the whole API
-is available over plain objects, with no class involved and the same
-complexity:
+Every method shown above is one line that calls the function of the same name:
+`DoublyLinkedList.popNode` is `return popNode(this)`. `Symbol.iterator` is the
+exception, choosing between `inOrder` and `inReverseOrder`. The functions the
+classes delegate to are exported, so the whole API is available over plain
+objects, with no class involved and the same complexity:
 
 ```typescript
 import {
@@ -279,7 +280,7 @@ A core list is the plain object `{ size, head, tail }`, with no
 and `iterators.inReverseOrder`. Hence `iterators.inOrder(list.head)` above,
 where the class form would be `for...of`.
 
-Neither form is the wrapper of the other: they operate on the same shapes, so a
+Neither form converts to the other: they operate on the same shapes, so a
 class instance can be passed to these functions, and an object like `Entry`
 satisfies `IDoublyLinkedListNode` structurally and can be handed to
 `doublyLinkedList.list` unmodified. Which one you use is a question of the style

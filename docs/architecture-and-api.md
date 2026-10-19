@@ -158,7 +158,7 @@ provides `create` and `detach`; `iterators` provides `inOrder` and
 | `inOrder`        | `O(n)` / `O(1)` space         | `O(n)` / `O(1)` space |
 | `inReverseOrder` | `O(n)` / `O(n)` space         | `O(n)` / `O(1)` space |
 
-Three of these are worth reading twice. `popNode` on a singly linked list walks
+Three rows need an explanation. `popNode` on a singly linked list walks
 from the head to find the predecessor of the tail, so a stack built on one
 pushes and pops at the head, where both are `O(1)`; one that pops at the tail
 pays `O(n)` per pop. `inReverseOrder` on a singly linked list allocates an array
@@ -265,8 +265,9 @@ label their output by extension — `.mjs` and `.d.mts` on the ES side, `.cjs` a
 `.d.cts` on the CommonJS side.
 
 Two scripts check the result. `check-declared-paths` verifies that every path
-declared in `package.json` exists, and that each entry point carries the
-extension of the module system it is declared for. `check-dist-loads` loads the
-two built entries the way a consumer would, the CommonJS one with `require` and
-the ES one with `import`. Jest covers both layers, and `npm run verify` runs the
-type check, the linter, the build and both checks in sequence.
+declared in `package.json` under `source`, `main`, `module`, `types` and
+`exports` exists, and that each entry point carries the extension of the module system it is
+declared for. `check-dist-loads` loads the two built root files, the CommonJS
+one with `require` and the ES one with `import`. Jest covers both layers, and
+`npm run verify` runs the type check, the linter, the build and both checks in
+σσσσσsequence.

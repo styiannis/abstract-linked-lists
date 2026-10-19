@@ -72,10 +72,11 @@ console.log(list.tail?.id); // c
 console.log([...list].map((n) => n.id)); // [ 'a' ]
 ```
 
-Forward iteration starts at `head` and stops at the first `null`, so it stays
-correct; the recorded ends do not. `shiftNode` and `popNode` reassign them
-as they unlink, which is the reason to remove an end node through them
-rather than with a bare `detach()`.
+Detaching the `tail` leaves forward iteration intact, because it starts at
+`head` and stops at the first `null`. Detaching the `head` does not: iteration
+starts at the detached node, whose `next` is now `null`, and yields that node
+alone. `shiftNode` and `popNode` reassign the ends as they unlink, which is the
+reason to remove an end node through them rather than with a bare `detach()`.
 
 ### What does `clear()` do to my nodes?
 
@@ -163,8 +164,9 @@ dll.pushNode(entries, { ...dllNode.create<Entry>(), key: 'y' });
 console.log(entries.head?.next?.key); // y
 ```
 
-Neither form loosens anything: assigning a different node type to `next` is
-still a compile error.
+Narrowing tightens rather than loosens: afterwards, assigning any node that is
+not a `Job` (or an `Entry`) to `next` is a compile error, where the base
+declarations accepted any node of the base type.
 
 ### How do I iterate in reverse?
 
